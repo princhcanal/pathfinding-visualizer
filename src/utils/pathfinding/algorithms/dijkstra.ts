@@ -1,6 +1,6 @@
-type Vertex = { node: string; weight: number };
+type Vertex = { node: number; weight: number };
 type Distances = { [key: string]: number };
-type Previous = { [key: string]: string };
+type Previous = { [key: string]: number };
 
 class WeightedGraph {
 	adjacencyList: { [key: string]: Vertex[] };
@@ -8,35 +8,51 @@ class WeightedGraph {
 		this.adjacencyList = {};
 	}
 
-	addVertex(vertex: string) {
+	addVertex(vertex: number) {
 		if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
 	}
 
-	addEdge(vertex1: string, vertex2: string, weight: number) {
-		this.adjacencyList[vertex1].push({ node: vertex2, weight });
-		this.adjacencyList[vertex2].push({ node: vertex1, weight });
+	addEdge(vertex1: number, vertex2: number, weight: number) {
+		this.adjacencyList[vertex1].push({
+			node: vertex2,
+			weight,
+		});
+		// this.adjacencyList[vertex2].push({ node: vertex1, weight });
 	}
 
-	dijkstra(start: string, end: string) {
+	dijkstra(start: number, end: number) {
+		let pathfindingAnimation = [];
 		let distances: Distances = {};
 		let previous: Previous = {};
 		let nodes = new PriorityQueue();
 		let smallest;
-		let path: string[] = [];
+		let path: number[] = [];
+		let visited: number[] = [];
+		let endFind = false;
 		for (let vertex in this.adjacencyList) {
-			if (vertex === start) {
+			if (Number(vertex) === start) {
 				distances[vertex] = 0;
-				nodes.enqueue(vertex, 0);
+				nodes.enqueue(Number(vertex), 0);
 			} else {
 				distances[vertex] = Infinity;
-				nodes.enqueue(vertex, Infinity);
+				nodes.enqueue(Number(vertex), Infinity);
 			}
-			previous[vertex] = '';
+			previous[vertex] = NaN;
 		}
 
 		while (nodes.values.length) {
 			smallest = nodes.dequeue().val;
-			if (smallest === end) {
+			// console.log('smallest: ', smallest);
+
+			if (smallest === start) {
+				// pathfindingAnimation.push({
+				// 	index: smallest,
+				// 	state: 'VISITING',
+				// });
+				visited.push(smallest);
+			}
+
+			if (smallest === end /*endFind*/) {
 				// DONE
 				// BUILD UP PATH TO RETURN AT END
 				if (smallest) {
@@ -47,6 +63,7 @@ class WeightedGraph {
 				}
 				break;
 			}
+
 			if (smallest || distances[smallest] !== Infinity) {
 				for (let neighbor in this.adjacencyList[smallest]) {
 					// find neighboring node
@@ -54,28 +71,53 @@ class WeightedGraph {
 					// calculate new distance to neighboring node
 					let candidate = distances[smallest] + nextNode.weight;
 					let nextNeighbor = nextNode.node;
-					if (candidate < distances[nextNeighbor]) {
-						// updating new smallest distance to neighbor
-						distances[nextNeighbor] = candidate;
-						// updating previous - how we got to neighbor
-						previous[nextNeighbor] = smallest;
-						// enqueue in priority queue with new priority
-						nodes.enqueue(nextNeighbor, candidate);
+
+					if (!visited.includes(nextNeighbor) && !endFind) {
+						// if (nextNeighbor !== end) {
+						pathfindingAnimation.push({
+							index: nextNeighbor,
+							state: 'VISITING',
+						});
+						// }
+
+						visited.push(nextNeighbor);
+
+						if (candidate < distances[nextNeighbor]) {
+							// updating new smallest distance to neighbor
+							distances[nextNeighbor] = candidate;
+							// updating previous - how we got to neighbor
+							previous[nextNeighbor] = smallest;
+							// enqueue in priority queue with new priority
+							nodes.enqueue(nextNeighbor, candidate);
+						}
+
+						if (nextNeighbor === end) {
+							endFind = true;
+							break;
+						}
 					}
 				}
 			}
 		}
+
 		if (smallest) {
-			return path.concat(smallest).reverse();
+			path.push(smallest);
+			path.reverse();
+
+			for (let i = 0; i < path.length; i++) {
+				pathfindingAnimation.push({ index: path[i], state: 'PATH' });
+			}
+
+			return pathfindingAnimation;
 		}
-		return path.reverse();
+		return pathfindingAnimation;
 	}
 }
 
 class PriorityQueue {
 	values: GraphVertex[] = [];
 
-	enqueue(val: string, priority: number) {
+	enqueue(val: number, priority: number) {
 		let newNode = new GraphVertex(val, priority);
 		this.values.push(newNode);
 		let index = this.values.length - 1;
@@ -141,7 +183,7 @@ class PriorityQueue {
 }
 
 class GraphVertex {
-	constructor(public val: string, public priority: number) {}
+	constructor(public val: number, public priority: number) {}
 }
 
 // * naive priority queue
@@ -164,25 +206,18 @@ class GraphVertex {
 //     }
 // }
 
-let g = new WeightedGraph();
+// let g = new WeightedGraph();
 
-g.addVertex('A');
-g.addVertex('B');
-g.addVertex('C');
-g.addVertex('D');
-g.addVertex('E');
-g.addVertex('F');
+// g.addVertex(1);
+// g.addVertex(2);
+// g.addVertex(3);
+// g.addVertex(4);
+// g.addVertex(5);
+// g.addVertex(6);
 
-g.addEdge('A', 'B', 4);
-g.addEdge('A', 'C', 2);
-g.addEdge('B', 'E', 3);
-g.addEdge('C', 'D', 2);
-g.addEdge('C', 'F', 4);
-g.addEdge('D', 'E', 3);
-g.addEdge('D', 'F', 1);
-g.addEdge('E', 'F', 1);
+// g.addEdge(1, 2, 1);
 
-console.log(g.dijkstra('A', 'E'));
+// console.log(g.dijkstra(1, 2));
 
-// export default WeightedGraph;
-export {};
+export default WeightedGraph;
+// export {};

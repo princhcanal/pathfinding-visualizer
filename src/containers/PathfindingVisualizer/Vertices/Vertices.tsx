@@ -10,8 +10,8 @@ interface VerticesProps {
 }
 
 export interface VerticesRef {
-	vertices: any;
-	children: any;
+	vertices: HTMLDivElement | null;
+	children: HTMLCollection | null;
 }
 
 const Vertices = (props: VerticesProps, ref: any) => {
