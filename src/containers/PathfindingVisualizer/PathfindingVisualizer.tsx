@@ -41,14 +41,20 @@ const START_COL = Math.floor(NUM_COLS / 4);
 const END_ROW = Math.floor(NUM_ROWS / 2) + 4;
 const END_COL = Math.floor((NUM_COLS / 4) * 3);
 
+const COLOR_START = 'blue';
+const COLOR_END = 'red';
+const COLOR_VISIT = 'orange';
+const COLOR_PATH = 'green';
+
 const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
+	const [graph, setGraph] = useState<WeightedGraph>(new WeightedGraph());
 	const [rows, setRows] = useState<number>(NUM_ROWS);
 	const [columns, setColumns] = useState<number>(NUM_COLS);
 	const [rowStart, setRowStart] = useState<number>(START_ROW);
 	const [colStart, setColStart] = useState<number>(START_COL);
 	const [rowEnd, setRowEnd] = useState<number>(END_ROW);
 	const [colEnd, setColEnd] = useState<number>(END_COL);
-	const [graph, setGraph] = useState<WeightedGraph>(new WeightedGraph());
+	const [setTimeouts] = useState<any>([]);
 
 	const verticesRef = useRef<HTMLDivElement>(null);
 
@@ -70,8 +76,8 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 		let startVertex: Vertex = handleGetVertex(rowStart, colStart);
 		let endVertex: Vertex = handleGetVertex(rowEnd, colEnd);
 
-		startVertex.element.style.backgroundColor = 'blue';
-		endVertex.element.style.backgroundColor = 'red';
+		startVertex.element.style.backgroundColor = COLOR_START;
+		endVertex.element.style.backgroundColor = COLOR_END;
 
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < columns; j++) {
@@ -108,6 +114,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	};
 
 	const handleFindShortestPath = (start: number, end: number) => {
+		handleClearPath();
 		let animations = graph.dijkstra(start, end);
 
 		for (let i = 0; i < animations.length; i++) {
@@ -128,28 +135,37 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 			}
 
 			if (!visited) {
-				setTimeout(() => {
-					if (animation.state === 'VISITING') {
-						vertex.element.style.backgroundColor = 'orange';
-					} else if (animation.state === 'PATH') {
-						vertex.element.style.backgroundColor = 'green';
-					}
-				}, 20 * i);
+				setTimeouts.push(
+					setTimeout(() => {
+						if (animation.state === 'VISITING') {
+							vertex.element.style.backgroundColor = COLOR_VISIT;
+						} else if (animation.state === 'PATH') {
+							vertex.element.style.backgroundColor = COLOR_PATH;
+						}
+					}, 20 * i)
+				);
 			}
 		}
 	};
 
+	const handleClearTimeouts = () => {
+		for (let timeout of setTimeouts) {
+			clearTimeout(timeout);
+		}
+	};
+
 	const handleClearPath = () => {
+		handleClearTimeouts();
+
 		for (let i = 0; i < rows; i++) {
 			for (let j = 0; j < columns; j++) {
-				if (
-					(i !== rowStart && j !== colStart) ||
-					(i !== rowEnd && j !== colEnd)
-				) {
-					handleGetVertex(i, j).element.style.backgroundColor = '';
+				let vertex = handleGetVertex(i, j);
+				if (i === rowStart && j === colStart) {
+					vertex.element.style.backgroundColor = COLOR_START;
+				} else if (i === rowEnd && j === colEnd) {
+					vertex.element.style.backgroundColor = COLOR_END;
 				} else {
-					console.log(i, j);
-					console.log(handleGetVertex(i, j).element);
+					handleGetVertex(i, j).element.style.backgroundColor = '';
 				}
 			}
 		}
@@ -169,7 +185,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 				>
 					Find path
 				</button>
-				<button onClick={handleClearPath}>Clear board</button>
+				<button onClick={handleClearPath}>Clear graph</button>
 				<button
 					onClick={() =>
 						console.log(

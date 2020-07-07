@@ -29,6 +29,7 @@ class WeightedGraph {
 		let path: number[] = [];
 		let visited: number[] = [];
 		let endFind = false;
+
 		for (let vertex in this.adjacencyList) {
 			if (Number(vertex) === start) {
 				distances[vertex] = 0;
@@ -45,10 +46,6 @@ class WeightedGraph {
 			// console.log('smallest: ', smallest);
 
 			if (smallest === start) {
-				// pathfindingAnimation.push({
-				// 	index: smallest,
-				// 	state: 'VISITING',
-				// });
 				visited.push(smallest);
 			}
 
@@ -73,12 +70,10 @@ class WeightedGraph {
 					let nextNeighbor = nextNode.node;
 
 					if (!visited.includes(nextNeighbor) && !endFind) {
-						// if (nextNeighbor !== end) {
 						pathfindingAnimation.push({
 							index: nextNeighbor,
 							state: 'VISITING',
 						});
-						// }
 
 						visited.push(nextNeighbor);
 
