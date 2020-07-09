@@ -3,3 +3,11 @@
 	width: 1.5rem;
 	border: 1px solid black;
 }
+
+.Start:hover {
+	cursor: grab;
+}
+
+.Vertex img {
+	width: 100%;
+}

@@ -1,13 +1,12 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import { useSelector } from 'react-redux';
+import { StoreState } from '../../../store/reducers';
 
 import styles from './Vertices.module.css';
 
 import VertexRow from './VertexRow/VertexRow';
 
-interface VerticesProps {
-	rows: number;
-	columns: number;
-}
+interface VerticesProps {}
 
 export interface VerticesRef {
 	vertices: HTMLDivElement | null;
@@ -15,6 +14,12 @@ export interface VerticesRef {
 }
 
 const Vertices = (props: VerticesProps, ref: any) => {
+	const numRows = useSelector<StoreState, number>(
+		(state) => state.graph.numRows
+	);
+	const numCols = useSelector<StoreState, number>(
+		(state) => state.graph.numCols
+	);
 	let verticesRef = useRef<HTMLDivElement>(null);
 
 	useImperativeHandle(
@@ -27,8 +32,10 @@ const Vertices = (props: VerticesProps, ref: any) => {
 
 	let vertices: JSX.Element[] = [];
 
-	for (let i = 0; i < props.rows; i++) {
-		vertices.push(<VertexRow columns={props.columns} key={i} />);
+	for (let i = 0; i < numRows; i++) {
+		vertices.push(
+			<VertexRow columns={numCols} key={i} verticesRef={verticesRef} />
+		);
 	}
 
 	return (
