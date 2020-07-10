@@ -10,6 +10,7 @@ import * as actions from '../../store/actions';
 import styles from './PathfindingVisualizer.module.css';
 import * as colors from '../../utils/colors';
 import * as position from '../../utils/position';
+import { setIsAnimating } from '../../store/actions';
 
 interface PathfindingVisualizerProps {}
 
@@ -20,9 +21,10 @@ interface Vertex {
 	absoluteIndex: number;
 }
 
-// TODO: implement drag and drop start and end vertices
+// FIXME: implement drag and drop start and end vertices
 // TODO: implement adding walls (land weight 1, water weight 2, mountain weight 3)
 // TODO: implement recalculating path
+// TODO: implement controls
 // TODO: implement other pathfinding algorithms
 // TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR
 
@@ -61,6 +63,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 
 	const handleFindShortestPath = (start: number, end: number) => {
 		dispatch(actions.clearPath(verticesRef));
+		dispatch(actions.setIsAnimating(true));
 
 		let animations = graph.dijkstra(start, end);
 
@@ -108,13 +111,31 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 					} else if (animation.state === 'PATH') {
 						vertex.element.style.backgroundColor =
 							colors.COLOR_PATH;
+					} else if (animation.state === 'DONE') {
+						dispatch(actions.setIsAnimating(false));
 					}
 				}, 20 * i)
 			);
 		}
 	};
 
-	const handleClearPath = () => dispatch(actions.clearPath(verticesRef));
+	const graphWallIndices = useSelector<StoreState, number[]>(
+		(state) => state.graph.wallIndices
+	);
+	const dragWallIndices = useSelector<StoreState, number[]>(
+		(state) => state.drag.wallIndices
+	);
+
+	const handleClearPath = () => {
+		dispatch(setIsAnimating(false));
+		dispatch(actions.clearPath(verticesRef));
+	};
+	const handleClearWalls = () => dispatch(actions.onClearWalls(verticesRef));
+	const handleReset = () => {
+		dispatch(actions.setIsAnimating(false));
+		dispatch(actions.clearPath(verticesRef));
+		dispatch(actions.onClearWalls(verticesRef));
+	};
 
 	return (
 		<div className={styles.PathfindingVisualizer}>
@@ -140,8 +161,15 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 				>
 					Find path
 				</button>
-				<button onClick={handleClearPath}>Clear graph</button>
-				<button onClick={() => console.log(startRow, startCol)}>
+				<button onClick={handleClearWalls}>Clear walls</button>
+				<button onClick={handleClearPath}>Clear path</button>
+				<button onClick={handleReset}>Reset</button>
+				<button
+					onClick={() => {
+						console.log('Graph wall indices:', graphWallIndices);
+						console.log('Drag wall indices:', dragWallIndices);
+					}}
+				>
 					Test
 				</button>
 			</div>

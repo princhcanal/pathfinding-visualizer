@@ -5,46 +5,58 @@ import * as colors from '../../utils/colors';
 export interface DragState {
 	isStartMouseDown: boolean;
 	isEndMouseDown: boolean;
+	isMouseDown: boolean;
+	wallIndices: number[];
+	isDoneAnimating: boolean;
 }
 
 const initialState: DragState = {
 	isStartMouseDown: false,
 	isEndMouseDown: false,
+	isMouseDown: false,
+	wallIndices: [],
+	isDoneAnimating: false,
 };
 
 const mouseDown = (state: DragState, action: any): DragState => {
-	let vertex = action.e.target;
-	let vertexIndex = vertex.getAttribute('absoluteIndex');
+	if (action.isAnimating) return state;
 
-	if (
-		parseInt(vertexIndex) ===
-		position.indexToAbsolute(
-			action.startRow,
-			action.startCol,
-			action.numRows,
-			action.numCols
-		)
-	) {
+	let vertex = action.e.target;
+	let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
+	let startVertexIndex = position.indexToAbsolute(
+		action.startRow,
+		action.startCol,
+		action.numRows,
+		action.numCols
+	);
+	let endVertexIndex = position.indexToAbsolute(
+		action.endRow,
+		action.endCol,
+		action.numRows,
+		action.numCols
+	);
+
+	if (vertexIndex === startVertexIndex) {
 		return {
 			...state,
 			isStartMouseDown: true,
 		};
-	} else if (
-		parseInt(vertexIndex) ===
-		position.indexToAbsolute(
-			action.endRow,
-			action.endCol,
-			action.numRows,
-			action.numCols
-		)
-	) {
+	} else if (vertexIndex === endVertexIndex) {
 		return {
 			...state,
 			isEndMouseDown: true,
 		};
 	}
 
-	return state;
+	if (state.wallIndices.includes(vertexIndex)) {
+		state.wallIndices = state.wallIndices.filter((i) => i !== vertexIndex);
+		vertex.style.backgroundColor = '';
+	} else {
+		state.wallIndices.push(vertexIndex);
+		vertex.style.backgroundColor = colors.COLOR_WALL;
+	}
+
+	return { ...state, isMouseDown: true };
 };
 
 const mouseOver = (state: DragState, action: any) => {
@@ -66,13 +78,33 @@ const mouseOver = (state: DragState, action: any) => {
 	);
 
 	if (state.isStartMouseDown && vertexIndex !== end.absoluteIndex) {
-		vertex.style.backgroundColor = colors.COLOR_START;
+		if (state.isDoneAnimating) {
+		} else {
+			vertex.style.backgroundColor = colors.COLOR_START;
+		}
 	} else if (state.isEndMouseDown && vertexIndex !== start.absoluteIndex) {
-		vertex.style.backgroundColor = colors.COLOR_END;
+		if (state.isDoneAnimating) {
+		} else {
+			vertex.style.backgroundColor = colors.COLOR_END;
+		}
+	} else if (
+		state.isMouseDown &&
+		vertexIndex !== start.absoluteIndex &&
+		vertexIndex !== end.absoluteIndex
+	) {
+		if (state.wallIndices.includes(vertexIndex)) {
+			state.wallIndices = state.wallIndices.filter(
+				(i) => i !== vertexIndex
+			);
+			vertex.style.backgroundColor = '';
+		} else {
+			state.wallIndices.push(vertexIndex);
+			vertex.style.backgroundColor = colors.COLOR_WALL;
+		}
 	}
 };
 
-const mouseOut = (state: DragState, action: any) => {
+const mouseOut = (state: DragState, action: any): void => {
 	let vertex = action.e.target;
 	let start = position.getVertex(
 		action.startRow,
@@ -101,6 +133,21 @@ const mouseUp = (state: DragState, action: any): DragState => {
 		...state,
 		isStartMouseDown: false,
 		isEndMouseDown: false,
+		isMouseDown: false,
+	};
+};
+
+const clearDragWalls = (state: DragState, action: any): DragState => {
+	return {
+		...state,
+		wallIndices: [],
+	};
+};
+
+const setIsDoneAnimating = (state: DragState, action: any): DragState => {
+	return {
+		...state,
+		isDoneAnimating: action.isDoneAnimating,
 	};
 };
 
@@ -119,6 +166,10 @@ export const dragReducer = (
 			return state;
 		case ActionTypes.MOUSE_UP:
 			return mouseUp(state, action);
+		case ActionTypes.CLEAR_DRAG_WALLS:
+			return clearDragWalls(state, action);
+		case ActionTypes.SET_IS_DONE_ANIMATING:
+			return setIsDoneAnimating(state, action);
 		default:
 			return state;
 	}

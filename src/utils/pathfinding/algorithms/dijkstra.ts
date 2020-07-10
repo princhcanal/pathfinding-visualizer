@@ -43,7 +43,6 @@ class WeightedGraph {
 
 		while (nodes.values.length) {
 			smallest = nodes.dequeue().val;
-			// console.log('smallest: ', smallest);
 
 			if (smallest === start) {
 				visited.push(smallest);
@@ -100,8 +99,14 @@ class WeightedGraph {
 			path.reverse();
 
 			for (let i = 0; i < path.length; i++) {
-				pathfindingAnimation.push({ index: path[i], state: 'PATH' });
+				if (path[i] !== start && path[i] !== end)
+					pathfindingAnimation.push({
+						index: path[i],
+						state: 'PATH',
+					});
 			}
+
+			pathfindingAnimation.push({ index: 0, state: 'DONE' });
 
 			return pathfindingAnimation;
 		}

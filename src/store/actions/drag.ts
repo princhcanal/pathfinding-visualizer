@@ -9,7 +9,8 @@ export const mouseDown = (
 	endRow: number,
 	endCol: number,
 	numRows: number,
-	numCols: number
+	numCols: number,
+	isAnimating: boolean
 ) => {
 	return {
 		type: ActionTypes.MOUSE_DOWN,
@@ -20,6 +21,7 @@ export const mouseDown = (
 		endCol,
 		numRows,
 		numCols,
+		isAnimating,
 	};
 };
 
@@ -32,9 +34,19 @@ export const onMouseDown = (e: any) => {
 		let endCol = graph.endCol;
 		let numRows = graph.numRows;
 		let numCols = graph.numCols;
+		let isAnimating = graph.isAnimating;
 
 		dispatch(
-			mouseDown(e, startRow, startCol, endRow, endCol, numRows, numCols)
+			mouseDown(
+				e,
+				startRow,
+				startCol,
+				endRow,
+				endCol,
+				numRows,
+				numCols,
+				isAnimating
+			)
 		);
 	};
 };
@@ -142,7 +154,7 @@ export const mouseUp = (e: any) => {
 	};
 };
 
-export const onMouseUp = (e: any) => {
+export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 	return (dispatch: any, getState: any) => {
 		let vertex = e.target;
 		let vertexRow = parseInt(vertex.getAttribute('row'));
@@ -155,7 +167,22 @@ export const onMouseUp = (e: any) => {
 		} else if (drag.isEndMouseDown) {
 			dispatch(actions.setEndRow(vertexRow));
 			dispatch(actions.setEndCol(vertexCol));
+		} else if (drag.isMouseDown) {
+			dispatch(actions.onSetWallIndices(drag.wallIndices, verticesRef));
 		}
 		dispatch(mouseUp(e));
+	};
+};
+
+export const clearDragWalls = () => {
+	return {
+		type: ActionTypes.CLEAR_DRAG_WALLS,
+	};
+};
+
+export const setIsDoneAnimating = (isDoneAnimating: boolean) => {
+	return {
+		type: ActionTypes.SET_IS_DONE_ANIMATING,
+		isDoneAnimating,
 	};
 };

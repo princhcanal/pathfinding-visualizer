@@ -21,7 +21,9 @@ const Vertex = (props: VertexRef) => {
 			onMouseOut={(e: any) =>
 				dispatch(actions.onMouseOut(e, props.verticesRef))
 			}
-			onMouseUp={(e: any) => dispatch(actions.onMouseUp(e))}
+			onMouseUp={(e: any) =>
+				dispatch(actions.onMouseUp(e, props.verticesRef))
+			}
 		>
 			{/* <img src='' alt='' /> */}
 		</div>

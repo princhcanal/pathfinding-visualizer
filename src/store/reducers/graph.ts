@@ -12,6 +12,8 @@ export interface GraphState {
 	endRow: number;
 	endCol: number;
 	setTimeouts: NodeJS.Timeout[];
+	wallIndices: number[];
+	isAnimating: boolean;
 }
 
 interface Vertex {
@@ -37,6 +39,8 @@ const initialState: GraphState = {
 	endRow: END_ROW,
 	endCol: END_COL,
 	setTimeouts: [],
+	wallIndices: [],
+	isAnimating: false,
 };
 
 const setStartRow = (state: GraphState, action: any): GraphState => {
@@ -66,7 +70,15 @@ const setEndCol = (state: GraphState, action: any): GraphState => {
 	};
 };
 
-const initGraph = (state: GraphState, action: any): void => {
+const setWallIndices = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		wallIndices: action.wallIndices,
+	};
+};
+
+const initGraph = (state: GraphState, action: any): GraphState => {
+	let graph = new WeightedGraph();
 	let startVertex: Vertex = position.getVertex(
 		state.startRow,
 		state.startCol,
@@ -90,7 +102,6 @@ const initGraph = (state: GraphState, action: any): void => {
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
 			let idx = state.numCols * i + j;
-
 			let vertex = position.getVertex(
 				i,
 				j,
@@ -98,6 +109,7 @@ const initGraph = (state: GraphState, action: any): void => {
 				state.numCols,
 				action.verticesRef
 			);
+
 			vertex.element.setAttribute('row', i.toString());
 			vertex.element.setAttribute('column', j.toString());
 			vertex.element.setAttribute(
@@ -107,35 +119,53 @@ const initGraph = (state: GraphState, action: any): void => {
 					.toString()
 			);
 
-			state.graph.addVertex(idx);
+			graph.addVertex(idx);
 		}
 	}
 
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
 			let idx = state.numCols * i + j;
+			let leftNeighbor = idx - 1;
+			let rightNeighbor = idx + 1;
+			let topNeighbor = idx - state.numCols;
+			let bottomNeighbor = idx + state.numCols;
 
 			// adds left neighbor edge
-			if (idx - 1 !== state.numCols * i - 1) {
-				state.graph.addEdge(idx, idx - 1, 1);
+			if (
+				leftNeighbor !== state.numCols * i - 1 &&
+				!state.wallIndices.includes(leftNeighbor)
+			) {
+				graph.addEdge(idx, leftNeighbor, 1);
 			}
 
 			// adds right neighbor edge
-			if (idx + 1 !== state.numCols * (i + 1)) {
-				state.graph.addEdge(idx, idx + 1, 1);
+			if (
+				rightNeighbor !== state.numCols * (i + 1) &&
+				!state.wallIndices.includes(rightNeighbor)
+			) {
+				graph.addEdge(idx, rightNeighbor, 1);
 			}
 
 			// adds top neighbor edge
-			if (idx - state.numCols >= 0) {
-				state.graph.addEdge(idx, idx - state.numCols, 1);
+			if (topNeighbor >= 0 && !state.wallIndices.includes(topNeighbor)) {
+				graph.addEdge(idx, topNeighbor, 1);
 			}
 
 			// adds bottom neighbor edge
-			if (idx + state.numCols < state.numRows * state.numCols) {
-				state.graph.addEdge(idx, idx + state.numCols, 1);
+			if (
+				bottomNeighbor < state.numRows * state.numCols &&
+				!state.wallIndices.includes(bottomNeighbor)
+			) {
+				graph.addEdge(idx, bottomNeighbor, 1);
 			}
 		}
 	}
+
+	return {
+		...state,
+		graph: graph,
+	};
 };
 
 const clearTimeouts = (state: GraphState, action: any): void => {
@@ -160,11 +190,45 @@ const clearPath = (state: GraphState, action: any): void => {
 				vertex.element.style.backgroundColor = colors.COLOR_START;
 			} else if (i === state.endRow && j === state.endCol) {
 				vertex.element.style.backgroundColor = colors.COLOR_END;
+			} else if (state.wallIndices.includes(vertex.absoluteIndex)) {
+				vertex.element.style.backgroundColor = colors.COLOR_WALL;
 			} else {
 				vertex.element.style.backgroundColor = '';
 			}
 		}
 	}
+};
+
+const clearWalls = (state: GraphState, action: any): GraphState => {
+	if (state.isAnimating) return state;
+
+	for (let i = 0; i < state.numRows; i++) {
+		for (let j = 0; j < state.numCols; j++) {
+			let vertex = position.getVertex(
+				i,
+				j,
+				state.numRows,
+				state.numCols,
+				action.verticesRef
+			);
+
+			if (state.wallIndices.includes(vertex.absoluteIndex)) {
+				vertex.element.style.backgroundColor = '';
+			}
+		}
+	}
+
+	return {
+		...state,
+		wallIndices: [],
+	};
+};
+
+const setIsAnimating = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		isAnimating: action.isAnimating,
+	};
 };
 
 export const graphReducer = (
@@ -173,8 +237,7 @@ export const graphReducer = (
 ): GraphState => {
 	switch (action.type) {
 		case ActionTypes.INIT_GRAPH:
-			initGraph(state, action);
-			return state;
+			return initGraph(state, action);
 		case ActionTypes.SET_START_ROW:
 			return setStartRow(state, action);
 		case ActionTypes.SET_START_COL:
@@ -189,6 +252,12 @@ export const graphReducer = (
 		case ActionTypes.CLEAR_PATH:
 			clearPath(state, action);
 			return state;
+		case ActionTypes.SET_WALL_INDICES:
+			return setWallIndices(state, action);
+		case ActionTypes.CLEAR_WALLS:
+			return clearWalls(state, action);
+		case ActionTypes.SET_IS_ANIMATING:
+			return setIsAnimating(state, action);
 		default:
 			return state;
 	}
