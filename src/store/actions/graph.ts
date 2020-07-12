@@ -9,31 +9,26 @@ export const initGraph = (verticesRef: RefObject<HTMLDivElement>) => {
 	};
 };
 
-export const setStartRow = (row: number) => {
+export const setVerticesRef = (verticesRef: RefObject<HTMLDivElement>) => {
 	return {
-		type: ActionTypes.SET_START_ROW,
-		row,
+		type: ActionTypes.SET_VERTICES_REF,
+		verticesRef,
 	};
 };
 
-export const setStartCol = (col: number) => {
+export const setStartVertex = (startRow: number, startCol: number) => {
 	return {
-		type: ActionTypes.SET_START_COL,
-		col,
+		type: ActionTypes.SET_START_VERTEX,
+		startRow,
+		startCol,
 	};
 };
 
-export const setEndRow = (row: number) => {
+export const setEndVertex = (endRow: number, endCol: number) => {
 	return {
-		type: ActionTypes.SET_END_ROW,
-		row,
-	};
-};
-
-export const setEndCol = (col: number) => {
-	return {
-		type: ActionTypes.SET_END_COL,
-		col,
+		type: ActionTypes.SET_END_VERTEX,
+		endRow,
+		endCol,
 	};
 };
 
@@ -43,10 +38,14 @@ export const clearTimeouts = () => {
 	};
 };
 
-export const clearPath = (verticesRef: RefObject<HTMLDivElement>) => {
+export const clearPath = (
+	verticesRef: RefObject<HTMLDivElement>,
+	isRecalculating: boolean
+) => {
 	return {
 		type: ActionTypes.CLEAR_PATH,
 		verticesRef,
+		isRecalculating,
 	};
 };
 
@@ -90,5 +89,36 @@ export const setIsAnimating = (isAnimating: boolean) => {
 	return {
 		type: ActionTypes.SET_IS_ANIMATING,
 		isAnimating,
+	};
+};
+
+export const recalculatePath = (
+	start: number,
+	end: number,
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return {
+		type: ActionTypes.RECALCULATE_PATH,
+		start,
+		end,
+		verticesRef,
+	};
+};
+
+export const onRecalculatePath = (
+	start: number,
+	end: number,
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return (dispatch: any, getState: any) => {
+		let drag = getState().drag;
+		if (
+			drag.isDoneAnimating &&
+			(drag.isStartMouseDown || drag.isEndMouseDown)
+		) {
+			dispatch(actions.setIsRecalculating(true));
+			dispatch(clearPath(verticesRef, drag.isRecalculating));
+			dispatch(recalculatePath(start, end, verticesRef));
+		}
 	};
 };

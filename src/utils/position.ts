@@ -1,11 +1,22 @@
+import { RefObject } from 'react';
+import { Vertex } from '../store/reducers/graph';
+
+type NumberOrNull = number | null;
+
+interface Neighbors {
+	left: NumberOrNull;
+	right: NumberOrNull;
+	top: NumberOrNull;
+	bottom: NumberOrNull;
+}
+
 export function absoluteToIndex(
 	index: number,
 	numRows: number,
 	numCols: number
 ) {
-	let row = Math.floor(index / numRows);
+	let row = Math.floor(index / numCols);
 	let col = index % numCols;
-
 	return { row, col };
 }
 
@@ -28,8 +39,8 @@ export const getVertex = (
 	column: number,
 	numRows: number,
 	numCols: number,
-	verticesRef: React.RefObject<HTMLDivElement>
-) => {
+	verticesRef: RefObject<HTMLDivElement>
+): Vertex => {
 	return {
 		element: verticesRef.current?.children[row].children[
 			column
@@ -38,4 +49,75 @@ export const getVertex = (
 		column,
 		absoluteIndex: indexToAbsolute(row, column, numRows, numCols),
 	};
+};
+
+export const getVertexAbsolute = (
+	absoluteIndex: number,
+	numRows: number,
+	numCols: number,
+	verticesRef: RefObject<HTMLDivElement>
+): Vertex => {
+	let vertexIndices = absoluteToIndex(absoluteIndex, numRows, numCols);
+
+	return {
+		element: verticesRef.current?.children[vertexIndices.row].children[
+			vertexIndices.col
+		] as HTMLElement,
+		row: vertexIndices.row,
+		column: vertexIndices.col,
+		absoluteIndex,
+	};
+};
+
+export const getNeighbors = (
+	idx: number,
+	row: number,
+	numRows: number,
+	numCols: number
+): Neighbors => {
+	let leftNeighbor: NumberOrNull = idx - 1;
+	let rightNeighbor: NumberOrNull = idx + 1;
+	let topNeighbor: NumberOrNull = idx - numCols;
+	let bottomNeighbor: NumberOrNull = idx + numCols;
+
+	if (!validLeftNeighbor(leftNeighbor, row, numCols)) leftNeighbor = null;
+	if (!validRightNeighbor(rightNeighbor, row, numCols)) rightNeighbor = null;
+	if (!validTopNeighbor(topNeighbor)) topNeighbor = null;
+	if (!validBottomNeighbor(bottomNeighbor, numRows, numCols))
+		bottomNeighbor = null;
+
+	return {
+		left: leftNeighbor,
+		right: rightNeighbor,
+		top: topNeighbor,
+		bottom: bottomNeighbor,
+	};
+};
+
+export const validLeftNeighbor = (
+	leftNeighbor: number,
+	row: number,
+	numCols: number
+): boolean => {
+	return leftNeighbor !== numCols * row - 1;
+};
+
+export const validRightNeighbor = (
+	rightNeighbor: number,
+	row: number,
+	numCols: number
+): boolean => {
+	return rightNeighbor !== numCols * (row + 1);
+};
+
+export const validTopNeighbor = (topNeighbor: number): boolean => {
+	return topNeighbor >= 0;
+};
+
+export const validBottomNeighbor = (
+	bottomNeighbor: number,
+	numRows: number,
+	numCols: number
+): boolean => {
+	return bottomNeighbor < numRows * numCols;
 };

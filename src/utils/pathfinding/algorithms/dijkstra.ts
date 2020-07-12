@@ -28,7 +28,7 @@ class WeightedGraph {
 		let smallest;
 		let path: number[] = [];
 		let visited: number[] = [];
-		let endFind = false;
+		let foundEnd = false;
 
 		for (let vertex in this.adjacencyList) {
 			if (Number(vertex) === start) {
@@ -46,9 +46,13 @@ class WeightedGraph {
 
 			if (smallest === start) {
 				visited.push(smallest);
+				pathfindingAnimation.push({
+					index: start,
+					state: 'VISITING',
+				});
 			}
 
-			if (smallest === end /*endFind*/) {
+			if (smallest === end /*foundEnd*/) {
 				// DONE
 				// BUILD UP PATH TO RETURN AT END
 				if (smallest) {
@@ -68,7 +72,7 @@ class WeightedGraph {
 					let candidate = distances[smallest] + nextNode.weight;
 					let nextNeighbor = nextNode.node;
 
-					if (!visited.includes(nextNeighbor) && !endFind) {
+					if (!visited.includes(nextNeighbor) && !foundEnd) {
 						pathfindingAnimation.push({
 							index: nextNeighbor,
 							state: 'VISITING',
@@ -86,7 +90,7 @@ class WeightedGraph {
 						}
 
 						if (nextNeighbor === end) {
-							endFind = true;
+							foundEnd = true;
 							break;
 						}
 					}
@@ -99,11 +103,11 @@ class WeightedGraph {
 			path.reverse();
 
 			for (let i = 0; i < path.length; i++) {
-				if (path[i] !== start && path[i] !== end)
-					pathfindingAnimation.push({
-						index: path[i],
-						state: 'PATH',
-					});
+				// if (path[i] !== start && path[i] !== end)
+				pathfindingAnimation.push({
+					index: path[i],
+					state: 'PATH',
+				});
 			}
 
 			pathfindingAnimation.push({ index: 0, state: 'DONE' });

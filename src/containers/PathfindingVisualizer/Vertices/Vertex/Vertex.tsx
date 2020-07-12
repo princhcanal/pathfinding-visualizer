@@ -14,19 +14,23 @@ const Vertex = (props: VertexRef) => {
 	return (
 		<div
 			className={styles.Vertex}
-			onMouseDown={(e: any) => dispatch(actions.onMouseDown(e))}
-			onMouseOver={(e: any) =>
-				dispatch(actions.onMouseOver(e, props.verticesRef))
-			}
-			onMouseOut={(e: any) =>
-				dispatch(actions.onMouseOut(e, props.verticesRef))
-			}
-			onMouseUp={(e: any) =>
-				dispatch(actions.onMouseUp(e, props.verticesRef))
-			}
-		>
-			{/* <img src='' alt='' /> */}
-		</div>
+			onMouseDown={(e: any) => {
+				e.preventDefault();
+				dispatch(actions.onMouseDown(e));
+			}}
+			onMouseOver={(e: any) => {
+				e.preventDefault();
+				dispatch(actions.onMouseOver(e, props.verticesRef));
+			}}
+			onMouseOut={(e: any) => {
+				e.preventDefault();
+				dispatch(actions.onMouseOut(e, props.verticesRef));
+			}}
+			onMouseUp={(e: any) => {
+				e.preventDefault();
+				dispatch(actions.onMouseUp(e, props.verticesRef));
+			}}
+		></div>
 	);
 };
 

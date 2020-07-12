@@ -2,27 +2,28 @@ import { ActionTypes } from '../actions';
 import WeightedGraph from '../../utils/pathfinding/algorithms/dijkstra';
 import * as position from '../../utils/position';
 import * as colors from '../../utils/colors';
+import { RefObject } from 'react';
 
 export interface GraphState {
 	graph: WeightedGraph;
+	startVertex: Vertex | null;
+	endVertex: Vertex | null;
+	verticesRef: RefObject<HTMLDivElement> | null;
 	numRows: number;
 	numCols: number;
-	startRow: number;
-	startCol: number;
-	endRow: number;
-	endCol: number;
 	setTimeouts: NodeJS.Timeout[];
 	wallIndices: number[];
 	isAnimating: boolean;
 }
 
-interface Vertex {
+export interface Vertex {
 	element: HTMLElement;
 	row: number;
 	column: number;
 	absoluteIndex: number;
 }
 
+// DEFAULTS
 const NUM_ROWS = 20;
 const NUM_COLS = 40;
 const START_ROW = Math.floor(NUM_ROWS / 2);
@@ -31,42 +32,68 @@ const END_ROW = Math.floor(NUM_ROWS / 2) + 4;
 const END_COL = Math.floor((NUM_COLS / 4) * 3);
 
 const initialState: GraphState = {
+	verticesRef: null,
+	startVertex: null,
+	endVertex: null,
 	graph: new WeightedGraph(),
 	numRows: NUM_ROWS,
 	numCols: NUM_COLS,
-	startRow: START_ROW,
-	startCol: START_COL,
-	endRow: END_ROW,
-	endCol: END_COL,
 	setTimeouts: [],
 	wallIndices: [],
 	isAnimating: false,
 };
 
-const setStartRow = (state: GraphState, action: any): GraphState => {
+const setVerticesRef = (state: GraphState, action: any): GraphState => {
+	let startVertex = position.getVertex(
+		START_ROW,
+		START_COL,
+		NUM_ROWS,
+		NUM_COLS,
+		action.verticesRef
+	);
+	let endVertex = position.getVertex(
+		END_ROW,
+		END_COL,
+		NUM_ROWS,
+		NUM_COLS,
+		action.verticesRef
+	);
+
 	return {
 		...state,
-		startRow: action.row,
+		verticesRef: action.verticesRef,
+		startVertex,
+		endVertex,
 	};
 };
 
-const setStartCol = (state: GraphState, action: any): GraphState => {
+const setStartVertex = (state: GraphState, action: any): GraphState => {
+	let startVertex = position.getVertex(
+		action.startRow,
+		action.startCol,
+		state.numRows,
+		state.numCols,
+		state.verticesRef as RefObject<HTMLDivElement>
+	);
+
 	return {
 		...state,
-		startCol: action.col,
-	};
-};
-const setEndRow = (state: GraphState, action: any): GraphState => {
-	return {
-		...state,
-		endRow: action.row,
+		startVertex,
 	};
 };
 
-const setEndCol = (state: GraphState, action: any): GraphState => {
+const setEndVertex = (state: GraphState, action: any): GraphState => {
+	let endVertex = position.getVertex(
+		action.endRow,
+		action.endCol,
+		state.numRows,
+		state.numCols,
+		state.verticesRef as RefObject<HTMLDivElement>
+	);
+
 	return {
 		...state,
-		endCol: action.col,
+		endVertex,
 	};
 };
 
@@ -79,25 +106,13 @@ const setWallIndices = (state: GraphState, action: any): GraphState => {
 
 const initGraph = (state: GraphState, action: any): GraphState => {
 	let graph = new WeightedGraph();
-	let startVertex: Vertex = position.getVertex(
-		state.startRow,
-		state.startCol,
-		state.numRows,
-		state.numCols,
-		action.verticesRef
-	);
-	let endVertex: Vertex = position.getVertex(
-		state.endRow,
-		state.endCol,
-		state.numRows,
-		state.numCols,
-		action.verticesRef
-	);
 
-	startVertex.element.style.backgroundColor = colors.COLOR_START;
-	// startVertex.element.children[0].setAttribute('src', 'car.png');
-	endVertex.element.style.backgroundColor = colors.COLOR_END;
-	// endVertex.element.children[0].setAttribute('src', 'location.png');
+	if (state.startVertex && state.endVertex) {
+		state.startVertex.element.style.background =
+			'url(car.png) no-repeat center / cover';
+		state.endVertex.element.style.background =
+			'url(location.png) no-repeat center / cover';
+	}
 
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
@@ -126,38 +141,43 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
 			let idx = state.numCols * i + j;
-			let leftNeighbor = idx - 1;
-			let rightNeighbor = idx + 1;
-			let topNeighbor = idx - state.numCols;
-			let bottomNeighbor = idx + state.numCols;
+			let neighbors = position.getNeighbors(
+				idx,
+				i,
+				state.numRows,
+				state.numCols
+			);
 
 			// adds left neighbor edge
 			if (
-				leftNeighbor !== state.numCols * i - 1 &&
-				!state.wallIndices.includes(leftNeighbor)
+				(neighbors.left || neighbors.left === 0) &&
+				!state.wallIndices.includes(neighbors.left)
 			) {
-				graph.addEdge(idx, leftNeighbor, 1);
+				graph.addEdge(idx, neighbors.left, 1);
 			}
 
 			// adds right neighbor edge
 			if (
-				rightNeighbor !== state.numCols * (i + 1) &&
-				!state.wallIndices.includes(rightNeighbor)
+				neighbors.right &&
+				!state.wallIndices.includes(neighbors.right)
 			) {
-				graph.addEdge(idx, rightNeighbor, 1);
+				graph.addEdge(idx, neighbors.right, 1);
 			}
 
 			// adds top neighbor edge
-			if (topNeighbor >= 0 && !state.wallIndices.includes(topNeighbor)) {
-				graph.addEdge(idx, topNeighbor, 1);
+			if (
+				(neighbors.top || neighbors.top === 0) &&
+				!state.wallIndices.includes(neighbors.top)
+			) {
+				graph.addEdge(idx, neighbors.top, 1);
 			}
 
 			// adds bottom neighbor edge
 			if (
-				bottomNeighbor < state.numRows * state.numCols &&
-				!state.wallIndices.includes(bottomNeighbor)
+				neighbors.bottom &&
+				!state.wallIndices.includes(neighbors.bottom)
 			) {
-				graph.addEdge(idx, bottomNeighbor, 1);
+				graph.addEdge(idx, neighbors.bottom, 1);
 			}
 		}
 	}
@@ -186,11 +206,8 @@ const clearPath = (state: GraphState, action: any): void => {
 				state.numCols,
 				action.verticesRef
 			);
-			if (i === state.startRow && j === state.startCol) {
-				vertex.element.style.backgroundColor = colors.COLOR_START;
-			} else if (i === state.endRow && j === state.endCol) {
-				vertex.element.style.backgroundColor = colors.COLOR_END;
-			} else if (state.wallIndices.includes(vertex.absoluteIndex)) {
+
+			if (state.wallIndices.includes(vertex.absoluteIndex)) {
 				vertex.element.style.backgroundColor = colors.COLOR_WALL;
 			} else {
 				vertex.element.style.backgroundColor = '';
@@ -231,6 +248,48 @@ const setIsAnimating = (state: GraphState, action: any): GraphState => {
 	};
 };
 
+const recalculatePath = (state: GraphState, action: any): void => {
+	let animations = state.graph.dijkstra(action.start, action.end);
+
+	for (let i = 0; i < animations.length; i++) {
+		let animation = animations[i];
+		let vertices = action.verticesRef.current;
+		let row = Math.floor(animation.index / state.numCols);
+		let column = animation.index % state.numCols;
+		let vertex = position.getVertex(
+			row,
+			column,
+			state.numRows,
+			state.numCols,
+			action.verticesRef
+		);
+
+		if (animation.state === 'VISITING') {
+			vertex.element.style.backgroundColor = colors.COLOR_VISITING;
+			if (i > 0) {
+				let prevAnimation = animations[i - 1];
+				let prevRow = Math.floor(prevAnimation.index / state.numCols);
+				let prevColumn = prevAnimation.index % state.numCols;
+				let prevVertex: Vertex;
+				if (vertices) {
+					prevVertex = position.getVertex(
+						prevRow,
+						prevColumn,
+						state.numRows,
+						state.numCols,
+						action.verticesRef
+					);
+					prevVertex.element.style.backgroundColor =
+						colors.COLOR_VISITED;
+				}
+			}
+		} else if (animation.state === 'PATH') {
+			vertex.element.style.backgroundColor = colors.COLOR_PATH;
+		} else if (animation.state === 'DONE') {
+		}
+	}
+};
+
 export const graphReducer = (
 	state: GraphState = initialState,
 	action: any
@@ -238,14 +297,12 @@ export const graphReducer = (
 	switch (action.type) {
 		case ActionTypes.INIT_GRAPH:
 			return initGraph(state, action);
-		case ActionTypes.SET_START_ROW:
-			return setStartRow(state, action);
-		case ActionTypes.SET_START_COL:
-			return setStartCol(state, action);
-		case ActionTypes.SET_END_ROW:
-			return setEndRow(state, action);
-		case ActionTypes.SET_END_COL:
-			return setEndCol(state, action);
+		case ActionTypes.SET_VERTICES_REF:
+			return setVerticesRef(state, action);
+		case ActionTypes.SET_START_VERTEX:
+			return setStartVertex(state, action);
+		case ActionTypes.SET_END_VERTEX:
+			return setEndVertex(state, action);
 		case ActionTypes.CLEAR_TIMEOUTS:
 			clearTimeouts(state, action);
 			return state;
@@ -258,6 +315,9 @@ export const graphReducer = (
 			return clearWalls(state, action);
 		case ActionTypes.SET_IS_ANIMATING:
 			return setIsAnimating(state, action);
+		case ActionTypes.RECALCULATE_PATH:
+			recalculatePath(state, action);
+			return state;
 		default:
 			return state;
 	}
