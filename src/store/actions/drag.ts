@@ -219,6 +219,7 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 	};
 };
 
+// FIXME: doesn't work on top-most and bottom-most vertices
 const getNeighbors = (
 	absoluteIndex: number,
 	row: number,

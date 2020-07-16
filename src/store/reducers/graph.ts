@@ -1,11 +1,16 @@
 import { ActionTypes } from '../actions';
-import WeightedGraph from '../../utils/pathfinding/algorithms/dijkstra';
-import * as position from '../../utils/position';
+import { Graph } from '../../utils/pathfinding/algorithms/graph';
+import * as Position from '../../utils/position';
 import * as colors from '../../utils/colors';
 import { RefObject } from 'react';
+// import { dijkstra } from '../../utils/pathfinding/algorithms/dijkstra';
+// import { breadthFirstSearch } from '../../utils/pathfinding/algorithms/breadthFirstSearch';
+// import { greedyBestFirstSearch } from '../../utils/pathfinding/algorithms/greedyBestFirstSearch';
+// import { aStar } from '../../utils/pathfinding/algorithms/aStar';
+import * as algorithms from '../../utils/pathfinding/algorithms';
 
 export interface GraphState {
-	graph: WeightedGraph;
+	graph: Graph;
 	startVertex: Vertex | null;
 	endVertex: Vertex | null;
 	verticesRef: RefObject<HTMLDivElement> | null;
@@ -14,6 +19,7 @@ export interface GraphState {
 	setTimeouts: NodeJS.Timeout[];
 	wallIndices: number[];
 	isAnimating: boolean;
+	currentAlgorithm: Function;
 }
 
 export interface Vertex {
@@ -35,23 +41,24 @@ const initialState: GraphState = {
 	verticesRef: null,
 	startVertex: null,
 	endVertex: null,
-	graph: new WeightedGraph(),
+	graph: new Graph(NUM_ROWS, NUM_COLS),
 	numRows: NUM_ROWS,
 	numCols: NUM_COLS,
 	setTimeouts: [],
 	wallIndices: [],
 	isAnimating: false,
+	currentAlgorithm: algorithms.dijkstra,
 };
 
 const setVerticesRef = (state: GraphState, action: any): GraphState => {
-	let startVertex = position.getVertex(
+	let startVertex = Position.getVertex(
 		START_ROW,
 		START_COL,
 		NUM_ROWS,
 		NUM_COLS,
 		action.verticesRef
 	);
-	let endVertex = position.getVertex(
+	let endVertex = Position.getVertex(
 		END_ROW,
 		END_COL,
 		NUM_ROWS,
@@ -68,7 +75,7 @@ const setVerticesRef = (state: GraphState, action: any): GraphState => {
 };
 
 const setStartVertex = (state: GraphState, action: any): GraphState => {
-	let startVertex = position.getVertex(
+	let startVertex = Position.getVertex(
 		action.startRow,
 		action.startCol,
 		state.numRows,
@@ -83,7 +90,7 @@ const setStartVertex = (state: GraphState, action: any): GraphState => {
 };
 
 const setEndVertex = (state: GraphState, action: any): GraphState => {
-	let endVertex = position.getVertex(
+	let endVertex = Position.getVertex(
 		action.endRow,
 		action.endCol,
 		state.numRows,
@@ -105,7 +112,7 @@ const setWallIndices = (state: GraphState, action: any): GraphState => {
 };
 
 const initGraph = (state: GraphState, action: any): GraphState => {
-	let graph = new WeightedGraph();
+	let graph = new Graph(state.numRows, state.numCols);
 
 	if (state.startVertex && state.endVertex) {
 		state.startVertex.element.style.background =
@@ -117,7 +124,7 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
 			let idx = state.numCols * i + j;
-			let vertex = position.getVertex(
+			let vertex = Position.getVertex(
 				i,
 				j,
 				state.numRows,
@@ -129,9 +136,12 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 			vertex.element.setAttribute('column', j.toString());
 			vertex.element.setAttribute(
 				'absoluteIndex',
-				position
-					.indexToAbsolute(i, j, state.numRows, state.numCols)
-					.toString()
+				Position.indexToAbsolute(
+					i,
+					j,
+					state.numRows,
+					state.numCols
+				).toString()
 			);
 
 			graph.addVertex(idx);
@@ -141,50 +151,50 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
 			let idx = state.numCols * i + j;
-			let neighbors = position.getNeighbors(
+			let neighbors = Position.getNeighbors(
 				idx,
 				i,
 				state.numRows,
 				state.numCols
 			);
 
-			// adds left neighbor edge
-			if (
-				(neighbors.left || neighbors.left === 0) &&
-				!state.wallIndices.includes(neighbors.left)
-			) {
-				graph.addEdge(idx, neighbors.left, 1);
-			}
-
 			// adds right neighbor edge
 			if (
-				neighbors.right &&
+				neighbors.right >= 0 &&
 				!state.wallIndices.includes(neighbors.right)
 			) {
 				graph.addEdge(idx, neighbors.right, 1);
 			}
 
-			// adds top neighbor edge
+			// adds left neighbor edge
 			if (
-				(neighbors.top || neighbors.top === 0) &&
-				!state.wallIndices.includes(neighbors.top)
+				neighbors.left >= 0 &&
+				!state.wallIndices.includes(neighbors.left)
 			) {
-				graph.addEdge(idx, neighbors.top, 1);
+				graph.addEdge(idx, neighbors.left, 1);
 			}
 
 			// adds bottom neighbor edge
 			if (
-				neighbors.bottom &&
+				neighbors.bottom >= 0 &&
 				!state.wallIndices.includes(neighbors.bottom)
 			) {
 				graph.addEdge(idx, neighbors.bottom, 1);
+			}
+
+			// adds top neighbor edge
+			if (
+				neighbors.top >= 0 &&
+				!state.wallIndices.includes(neighbors.top)
+			) {
+				graph.addEdge(idx, neighbors.top, 1);
 			}
 		}
 	}
 
 	return {
 		...state,
-		graph: graph,
+		graph,
 	};
 };
 
@@ -199,7 +209,7 @@ const clearPath = (state: GraphState, action: any): void => {
 
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
-			let vertex = position.getVertex(
+			let vertex = Position.getVertex(
 				i,
 				j,
 				state.numRows,
@@ -221,7 +231,7 @@ const clearWalls = (state: GraphState, action: any): GraphState => {
 
 	for (let i = 0; i < state.numRows; i++) {
 		for (let j = 0; j < state.numCols; j++) {
-			let vertex = position.getVertex(
+			let vertex = Position.getVertex(
 				i,
 				j,
 				state.numRows,
@@ -248,15 +258,26 @@ const setIsAnimating = (state: GraphState, action: any): GraphState => {
 	};
 };
 
+const setCurrentAlgorithm = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		currentAlgorithm: action.currentAlgorithm,
+	};
+};
+
 const recalculatePath = (state: GraphState, action: any): void => {
-	let animations = state.graph.dijkstra(action.start, action.end);
+	let animations = state.currentAlgorithm(
+		state.graph,
+		action.start,
+		action.end
+	);
 
 	for (let i = 0; i < animations.length; i++) {
 		let animation = animations[i];
 		let vertices = action.verticesRef.current;
 		let row = Math.floor(animation.index / state.numCols);
 		let column = animation.index % state.numCols;
-		let vertex = position.getVertex(
+		let vertex = Position.getVertex(
 			row,
 			column,
 			state.numRows,
@@ -272,7 +293,7 @@ const recalculatePath = (state: GraphState, action: any): void => {
 				let prevColumn = prevAnimation.index % state.numCols;
 				let prevVertex: Vertex;
 				if (vertices) {
-					prevVertex = position.getVertex(
+					prevVertex = Position.getVertex(
 						prevRow,
 						prevColumn,
 						state.numRows,
@@ -318,6 +339,8 @@ export const graphReducer = (
 		case ActionTypes.RECALCULATE_PATH:
 			recalculatePath(state, action);
 			return state;
+		case ActionTypes.SET_CURRENT_ALGORITHM:
+			return setCurrentAlgorithm(state, action);
 		default:
 			return state;
 	}

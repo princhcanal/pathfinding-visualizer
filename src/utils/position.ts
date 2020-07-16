@@ -1,13 +1,11 @@
 import { RefObject } from 'react';
 import { Vertex } from '../store/reducers/graph';
 
-type NumberOrNull = number | null;
-
 interface Neighbors {
-	left: NumberOrNull;
-	right: NumberOrNull;
-	top: NumberOrNull;
-	bottom: NumberOrNull;
+	left: number;
+	right: number;
+	top: number;
+	bottom: number;
 }
 
 export function absoluteToIndex(
@@ -75,16 +73,16 @@ export const getNeighbors = (
 	numRows: number,
 	numCols: number
 ): Neighbors => {
-	let leftNeighbor: NumberOrNull = idx - 1;
-	let rightNeighbor: NumberOrNull = idx + 1;
-	let topNeighbor: NumberOrNull = idx - numCols;
-	let bottomNeighbor: NumberOrNull = idx + numCols;
+	let leftNeighbor: number = idx - 1;
+	let rightNeighbor: number = idx + 1;
+	let topNeighbor: number = idx - numCols;
+	let bottomNeighbor: number = idx + numCols;
 
-	if (!validLeftNeighbor(leftNeighbor, row, numCols)) leftNeighbor = null;
-	if (!validRightNeighbor(rightNeighbor, row, numCols)) rightNeighbor = null;
-	if (!validTopNeighbor(topNeighbor)) topNeighbor = null;
+	if (!validLeftNeighbor(leftNeighbor, row, numCols)) leftNeighbor = -1;
+	if (!validRightNeighbor(rightNeighbor, row, numCols)) rightNeighbor = -1;
+	if (!validTopNeighbor(topNeighbor)) topNeighbor = -1;
 	if (!validBottomNeighbor(bottomNeighbor, numRows, numCols))
-		bottomNeighbor = null;
+		bottomNeighbor = -1;
 
 	return {
 		left: leftNeighbor,

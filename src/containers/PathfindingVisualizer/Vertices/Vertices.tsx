@@ -34,7 +34,12 @@ const Vertices = (props: VerticesProps, ref: any) => {
 
 	for (let i = 0; i < numRows; i++) {
 		vertices.push(
-			<VertexRow columns={numCols} key={i} verticesRef={verticesRef} />
+			<VertexRow
+				rowNumber={i}
+				columns={numCols}
+				key={i}
+				verticesRef={verticesRef}
+			/>
 		);
 	}
 

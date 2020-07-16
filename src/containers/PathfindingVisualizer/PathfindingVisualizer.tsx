@@ -1,9 +1,11 @@
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, ChangeEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { StoreState } from '../../store/reducers';
 
 import Vertices from './Vertices/Vertices';
-import WeightedGraph from '../../utils/pathfinding/algorithms/dijkstra';
+import Dropdown from '../../components/UI/Dropdown/Dropdown';
+
+import { Graph } from '../../utils/pathfinding/algorithms/graph';
 
 import * as actions from '../../store/actions';
 
@@ -12,19 +14,21 @@ import { Vertex } from '../../store/reducers/graph';
 import styles from './PathfindingVisualizer.module.css';
 import * as colors from '../../utils/colors';
 import * as position from '../../utils/position';
+import { pathfindingOptions } from '../../utils/pathfinding/pathfindingOptions';
 
 interface PathfindingVisualizerProps {}
 
 // FIXME: mouse over / mouse out
+// TODO: implement pathfinding algorithms: dijkstra, a*, greedy best-first search, breadth-first-search, depth-first search
 // TODO: implement adding weighted walls (land weight 1, water weight 2, mountain weight 3)
-// TODO: implement controls
-// TODO: implement other pathfinding algorithms
-// TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR
+// TODO: implement mobile controls
+// TODO: implement themes (Road, Avengers)
+// TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
+// TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
+// TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
 
 const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
-	const graph = useSelector<StoreState, WeightedGraph>(
-		(state) => state.graph.graph
-	);
+	const graph = useSelector<StoreState, Graph>((state) => state.graph.graph);
 	const numRows = useSelector<StoreState, number>(
 		(state) => state.graph.numRows
 	);
@@ -40,6 +44,9 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	const setTimeouts = useSelector<StoreState, NodeJS.Timeout[]>(
 		(state) => state.graph.setTimeouts
 	);
+	const currentAlgorithm = useSelector<StoreState, Function>(
+		(state) => state.graph.currentAlgorithm
+	);
 
 	const dispatch = useDispatch();
 
@@ -50,15 +57,14 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 		dispatch(actions.initGraph(verticesRef));
 	}, [dispatch]);
 
-	const handleFindShortestPath = (start: number, end: number) => {
-		dispatch(actions.clearPath(verticesRef, false));
+	const handleAnimation = (start: number, end: number) => {
+		dispatch(actions.clearPath(verticesRef));
 		dispatch(actions.setIsAnimating(true));
 
-		let animations = graph.dijkstra(start, end);
+		let animations = currentAlgorithm(graph, start, end);
 
 		for (let i = 0; i < animations.length; i++) {
 			let animation = animations[i];
-			let vertices = verticesRef.current;
 			let row = Math.floor(animation.index / numCols);
 			let column = animation.index % numCols;
 			let vertex: Vertex;
@@ -78,22 +84,14 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 							colors.COLOR_VISITING;
 						if (i > 0) {
 							let prevAnimation = animations[i - 1];
-							let prevRow = Math.floor(
-								prevAnimation.index / numCols
+							let prevVertex = position.getVertexAbsolute(
+								prevAnimation.index,
+								numRows,
+								numCols,
+								verticesRef
 							);
-							let prevColumn = prevAnimation.index % numCols;
-							let prevVertex: Vertex;
-							if (vertices) {
-								prevVertex = position.getVertex(
-									prevRow,
-									prevColumn,
-									numRows,
-									numCols,
-									verticesRef
-								);
-								prevVertex.element.style.backgroundColor =
-									colors.COLOR_VISITED;
-							}
+							prevVertex.element.style.backgroundColor =
+								colors.COLOR_VISITED;
 						}
 					} else if (animation.state === 'PATH') {
 						vertex.element.style.backgroundColor =
@@ -102,7 +100,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 						dispatch(actions.setIsAnimating(false));
 						dispatch(actions.setIsDoneAnimating(true));
 					}
-				}, 20 * i)
+				}, 10 * i)
 			);
 		}
 	};
@@ -110,14 +108,18 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	const handleClearPath = () => {
 		dispatch(actions.setIsAnimating(false));
 		dispatch(actions.setIsDoneAnimating(false));
-		dispatch(actions.clearPath(verticesRef, false));
+		dispatch(actions.clearPath(verticesRef));
 	};
 	const handleClearWalls = () => dispatch(actions.onClearWalls(verticesRef));
 	const handleReset = () => {
 		dispatch(actions.setIsAnimating(false));
 		dispatch(actions.setIsDoneAnimating(false));
-		dispatch(actions.clearPath(verticesRef, false));
+		dispatch(actions.clearPath(verticesRef));
 		dispatch(actions.onClearWalls(verticesRef));
+	};
+
+	const handleAlgorithmChanged = (e: ChangeEvent<HTMLSelectElement>) => {
+		dispatch(actions.setCurrentAlgorithm(e.target.value));
 	};
 
 	return (
@@ -126,7 +128,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 			<div className={styles.buttons}>
 				<button
 					onClick={() =>
-						handleFindShortestPath(
+						handleAnimation(
 							startVertex?.absoluteIndex
 								? startVertex.absoluteIndex
 								: 0,
@@ -150,6 +152,11 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 					Test
 				</button>
 			</div>
+			<Dropdown
+				name='pathfinding-algorithms'
+				options={pathfindingOptions}
+				onChange={handleAlgorithmChanged}
+			></Dropdown>
 		</div>
 	);
 };

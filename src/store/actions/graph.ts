@@ -1,6 +1,7 @@
 import { RefObject } from 'react';
 import { ActionTypes } from './types';
 import * as actions from '../actions';
+import { pathfindingAlgorithms } from '../../utils/pathfinding/pathfindingAlgorithms';
 
 export const initGraph = (verticesRef: RefObject<HTMLDivElement>) => {
 	return {
@@ -40,7 +41,7 @@ export const clearTimeouts = () => {
 
 export const clearPath = (
 	verticesRef: RefObject<HTMLDivElement>,
-	isRecalculating: boolean
+	isRecalculating: boolean = false
 ) => {
 	return {
 		type: ActionTypes.CLEAR_PATH,
@@ -120,5 +121,12 @@ export const onRecalculatePath = (
 			dispatch(clearPath(verticesRef, drag.isRecalculating));
 			dispatch(recalculatePath(start, end, verticesRef));
 		}
+	};
+};
+
+export const setCurrentAlgorithm = (algorithm: string) => {
+	return {
+		type: ActionTypes.SET_CURRENT_ALGORITHM,
+		currentAlgorithm: pathfindingAlgorithms[algorithm],
 	};
 };

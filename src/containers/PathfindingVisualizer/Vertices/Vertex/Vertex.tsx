@@ -6,6 +6,7 @@ import styles from './Vertex.module.css';
 
 interface VertexRef {
 	verticesRef: RefObject<HTMLDivElement>;
+	absoluteIndex: number;
 }
 
 const Vertex = (props: VertexRef) => {
@@ -30,7 +31,9 @@ const Vertex = (props: VertexRef) => {
 				e.preventDefault();
 				dispatch(actions.onMouseUp(e, props.verticesRef));
 			}}
-		></div>
+		>
+			{props.absoluteIndex}
+		</div>
 	);
 };
 
