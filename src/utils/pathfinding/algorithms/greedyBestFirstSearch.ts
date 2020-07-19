@@ -2,6 +2,8 @@ import { Graph } from './graph';
 import { PriorityQueue } from './priorityQueue';
 import * as GraphTypes from './graphTypes';
 import * as Position from '../../position';
+import { PathfindingStates } from '../pathfindingStates';
+import { buildPath } from './buildPath';
 
 export const greedyBestFirstSearch = (
 	graph: Graph,
@@ -35,30 +37,19 @@ export const greedyBestFirstSearch = (
 
 		pathfindingAnimation.push({
 			index: current.node,
-			state: 'VISITING',
+			state: PathfindingStates.VISITING,
 		});
 
 		if (current.node === end) {
-			let currentNode = current.node;
-			while (previous[currentNode]) {
-				path.push(currentNode);
-				currentNode = previous[currentNode];
-			}
-
-			path.push(currentNode);
-			path.reverse();
-
-			for (let i = 0; i < path.length; i++) {
-				pathfindingAnimation.push({
-					index: path[i],
-					state: 'PATH',
-				});
-			}
-
-			pathfindingAnimation.push({
-				index: 0,
-				state: 'DONE',
-			});
+			buildPath(
+				pathfindingAnimation,
+				current.node,
+				previous,
+				path,
+				start,
+				end,
+				graph
+			);
 
 			break;
 		}

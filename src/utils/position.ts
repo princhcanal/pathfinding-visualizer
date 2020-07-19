@@ -1,7 +1,7 @@
 import { RefObject } from 'react';
 import { Vertex } from '../store/reducers/graph';
 
-interface Neighbors {
+export interface Neighbors {
 	left: number;
 	right: number;
 	top: number;
@@ -42,7 +42,7 @@ export const getVertex = (
 	return {
 		element: verticesRef.current?.children[row].children[
 			column
-		] as HTMLElement,
+		] as HTMLDivElement,
 		row,
 		column,
 		absoluteIndex: indexToAbsolute(row, column, numRows, numCols),
@@ -60,7 +60,7 @@ export const getVertexAbsolute = (
 	return {
 		element: verticesRef.current?.children[vertexIndices.row].children[
 			vertexIndices.col
-		] as HTMLElement,
+		] as HTMLDivElement,
 		row: vertexIndices.row,
 		column: vertexIndices.col,
 		absoluteIndex,

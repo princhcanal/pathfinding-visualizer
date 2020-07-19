@@ -3,10 +3,14 @@ import { ActionTypes } from './types';
 import * as actions from '../actions';
 import { pathfindingAlgorithms } from '../../utils/pathfinding/pathfindingAlgorithms';
 
-export const initGraph = (verticesRef: RefObject<HTMLDivElement>) => {
+export const initGraph = (
+	verticesRef: RefObject<HTMLDivElement>,
+	isSettingWalls: boolean = false
+) => {
 	return {
 		type: ActionTypes.INIT_GRAPH,
 		verticesRef,
+		isSettingWalls,
 	};
 };
 
@@ -41,12 +45,16 @@ export const clearTimeouts = () => {
 
 export const clearPath = (
 	verticesRef: RefObject<HTMLDivElement>,
-	isRecalculating: boolean = false
+	isRecalculating: boolean = false,
+	start: number = -1,
+	end: number = -1
 ) => {
 	return {
 		type: ActionTypes.CLEAR_PATH,
 		verticesRef,
 		isRecalculating,
+		start,
+		end,
 	};
 };
 
@@ -67,7 +75,17 @@ export const onSetWallIndices = (
 ) => {
 	return (dispatch: any, getState: any) => {
 		dispatch(setWallIndices(wallIndices, verticesRef));
-		dispatch(actions.initGraph(verticesRef));
+		dispatch(initGraph(verticesRef, true));
+		dispatch(
+			onRecalculatePath(
+				getState().graph.start,
+				getState().graph.end,
+				verticesRef,
+				0,
+				0,
+				0
+			)
+		);
 	};
 };
 
@@ -82,7 +100,7 @@ export const onClearWalls = (verticesRef: RefObject<HTMLDivElement>) => {
 	return (dispatch: any, getState: any) => {
 		dispatch(actions.clearDragWalls());
 		dispatch(clearWalls(verticesRef));
-		dispatch(initGraph(verticesRef));
+		dispatch(initGraph(verticesRef, true));
 	};
 };
 
@@ -109,17 +127,38 @@ export const recalculatePath = (
 export const onRecalculatePath = (
 	start: number,
 	end: number,
-	verticesRef: RefObject<HTMLDivElement>
+	verticesRef: RefObject<HTMLDivElement>,
+	overEndIndex: number,
+	overStartIndex: number,
+	overWallIndex: number
 ) => {
 	return (dispatch: any, getState: any) => {
 		let drag = getState().drag;
-		if (
-			drag.isDoneAnimating &&
-			(drag.isStartMouseDown || drag.isEndMouseDown)
-		) {
+		let isDoneAnimating = drag.isDoneAnimating;
+		let isStartMouseDown = drag.isStartMouseDown;
+		let isEndMouseDown = drag.isEndMouseDown;
+		// TODO: add when new walls to condition
+		if (isDoneAnimating && (isStartMouseDown || isEndMouseDown)) {
 			dispatch(actions.setIsRecalculating(true));
-			dispatch(clearPath(verticesRef, drag.isRecalculating));
-			dispatch(recalculatePath(start, end, verticesRef));
+			dispatch(clearPath(verticesRef, true, start, end));
+
+			let startIndex = start;
+			let endIndex = end;
+			if (drag.isOverEnd) {
+				startIndex = overEndIndex;
+			} else if (
+				drag.isOverWall &&
+				!drag.isOverStart &&
+				isStartMouseDown
+			) {
+				startIndex = overWallIndex;
+			} else if (drag.isOverStart) {
+				endIndex = overStartIndex;
+			} else if (drag.isOverWall && !drag.isOverEnd && isEndMouseDown) {
+				endIndex = overWallIndex;
+			}
+
+			dispatch(recalculatePath(startIndex, endIndex, verticesRef));
 		}
 	};
 };

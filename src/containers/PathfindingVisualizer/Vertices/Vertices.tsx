@@ -1,10 +1,12 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { StoreState } from '../../../store/reducers';
+import * as Actions from '../../../store/actions';
 
 import styles from './Vertices.module.css';
 
 import VertexRow from './VertexRow/VertexRow';
+import { Vertex } from '../../../store/reducers/graph';
 
 interface VerticesProps {}
 
@@ -14,11 +16,30 @@ export interface VerticesRef {
 }
 
 const Vertices = (props: VerticesProps, ref: any) => {
+	const dispatch = useDispatch();
 	const numRows = useSelector<StoreState, number>(
 		(state) => state.graph.numRows
 	);
 	const numCols = useSelector<StoreState, number>(
 		(state) => state.graph.numCols
+	);
+	const startVertex = useSelector<StoreState, Vertex | null>(
+		(state) => state.graph.startVertex
+	);
+	const endVertex = useSelector<StoreState, Vertex | null>(
+		(state) => state.graph.endVertex
+	);
+	const wallIndices = useSelector<StoreState, number[]>(
+		(state) => state.drag.wallIndices
+	);
+	const isStartMouseDown = useSelector<StoreState, boolean>(
+		(state) => state.drag.isStartMouseDown
+	);
+	const isEndMouseDown = useSelector<StoreState, boolean>(
+		(state) => state.drag.isEndMouseDown
+	);
+	const isMouseDown = useSelector<StoreState, boolean>(
+		(state) => state.drag.isMouseDown
 	);
 	let verticesRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +64,35 @@ const Vertices = (props: VerticesProps, ref: any) => {
 		);
 	}
 
+	const handleMouseLeave = (e: any) => {
+		if (
+			startVertex &&
+			endVertex &&
+			(isStartMouseDown || isEndMouseDown || isMouseDown)
+		) {
+			dispatch(Actions.mouseUp(e));
+			dispatch(
+				Actions.setStartVertex(startVertex?.row, startVertex?.column)
+			);
+			dispatch(Actions.setEndVertex(endVertex?.row, endVertex?.column));
+			dispatch(
+				Actions.clearPath(
+					verticesRef,
+					false,
+					startVertex.absoluteIndex,
+					endVertex.absoluteIndex
+				)
+			);
+			dispatch(Actions.onSetWallIndices(wallIndices, verticesRef));
+		}
+	};
+
 	return (
-		<div className={styles.Vertices} ref={verticesRef}>
+		<div
+			className={styles.Vertices}
+			ref={verticesRef}
+			onMouseLeave={handleMouseLeave}
+		>
 			{vertices}
 		</div>
 	);

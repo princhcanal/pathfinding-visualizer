@@ -1,5 +1,7 @@
 import { Graph } from './graph';
 import * as GraphTypes from './graphTypes';
+import { PathfindingStates } from '../pathfindingStates';
+import { buildPath } from './buildPath';
 
 export const breadthFirstSearch = (
 	graph: Graph,
@@ -18,25 +20,20 @@ export const breadthFirstSearch = (
 
 		pathfindingAnimation.push({
 			index: current as number,
-			state: 'VISITING',
+			state: PathfindingStates.VISITING,
 		});
 
 		if (current === end) {
-			while (previous[current]) {
-				path.push(current);
-				current = previous[current];
-			}
-			path.push(start);
-			path.reverse();
+			buildPath(
+				pathfindingAnimation,
+				current,
+				previous,
+				path,
+				start,
+				end,
+				graph
+			);
 
-			for (let i = 0; i < path.length; i++) {
-				pathfindingAnimation.push({
-					index: path[i],
-					state: 'PATH',
-				});
-			}
-
-			pathfindingAnimation.push({ index: 0, state: 'DONE' });
 			break;
 		}
 

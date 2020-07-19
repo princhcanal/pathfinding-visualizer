@@ -1,6 +1,10 @@
 export const COLOR_START = 'blue';
 export const COLOR_END = 'red';
-export const COLOR_VISITED = 'orange';
-export const COLOR_VISITING = 'purple';
-export const COLOR_PATH = 'green';
-export const COLOR_WALL = 'black';
+export const COLOR_VISITED = '#8d6b94';
+export const COLOR_VISITING = '#ff6b6b';
+export const COLOR_PATH = '#4ecdc4';
+export const COLOR_WALL = '#292f36';
+
+export const COLOR_GRASS = '#ACE4AA';
+export const COLOR_CAR = '#F9C8D8';
+export const COLOR_LOCATION = '#56CBF9';

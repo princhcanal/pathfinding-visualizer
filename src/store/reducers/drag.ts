@@ -1,5 +1,5 @@
 import { ActionTypes } from '../actions';
-import * as colors from '../../utils/colors';
+import * as Position from '../../utils/position';
 
 export interface DragState {
 	isStartMouseDown: boolean;
@@ -10,10 +10,13 @@ export interface DragState {
 	isRecalculating: boolean;
 	isOverStart: boolean;
 	isOverEnd: boolean;
+	isOverWall: boolean;
 	overStartRow: number;
 	overStartCol: number;
 	overEndRow: number;
 	overEndCol: number;
+	overWallRow: number;
+	overWallCol: number;
 }
 
 const initialState: DragState = {
@@ -25,10 +28,13 @@ const initialState: DragState = {
 	isRecalculating: false,
 	isOverStart: false,
 	isOverEnd: false,
+	isOverWall: false,
 	overStartRow: 0,
 	overStartCol: 0,
 	overEndRow: 0,
 	overEndCol: 0,
+	overWallRow: 0,
+	overWallCol: 0,
 };
 
 const mouseDown = (state: DragState, action: any): DragState => {
@@ -51,47 +57,90 @@ const mouseDown = (state: DragState, action: any): DragState => {
 
 	if (state.wallIndices.includes(vertexIndex)) {
 		state.wallIndices = state.wallIndices.filter((i) => i !== vertexIndex);
-		vertex.style.backgroundColor = '';
+		action.theme.revertWall(vertex);
 	} else {
 		state.wallIndices.push(vertexIndex);
-		vertex.style.backgroundColor = colors.COLOR_WALL;
+		action.theme.wall(vertex);
 	}
 
 	return { ...state, isMouseDown: true };
 };
 
+// FIXME: vertex over walls over start/end
 const mouseOver = (state: DragState, action: any): DragState => {
 	let vertex = action.e.target;
 	let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
 	let isOverStart = false;
 	let isOverEnd = false;
+	let isOverWall = false;
 
 	if (state.isStartMouseDown) {
 		if (vertexIndex === action.endVertex.absoluteIndex) {
 			isOverEnd = true;
+		} else if (state.wallIndices.includes(vertexIndex)) {
+			isOverWall = true;
 		} else {
 			if (!action.endNeighbors.includes(vertexIndex)) {
 				for (let endNeighborVertex of action.endNeighborsVertices) {
-					endNeighborVertex.element.style.background = '';
-				}
-			}
-			vertex.style.background = 'url(car.png) no-repeat center / cover';
-		}
-	} else if (
-		state.isEndMouseDown &&
-		vertexIndex !== action.startVertex.absoluteIndex
-	) {
-		if (vertexIndex === action.startVertex.absoluteIndex) {
-			isOverStart = true;
-		} else {
-			if (!action.startNeighbors.includes(vertexIndex)) {
-				for (let startNeighborVertex of action.startNeighborsVertices) {
-					startNeighborVertex.element.style.background = '';
+					if (
+						!state.wallIndices.includes(
+							endNeighborVertex.absoluteIndex
+						)
+					) {
+						action.theme.unvisited(endNeighborVertex.element);
+					}
 				}
 			}
 
-			vertex.style.background =
-				'url(location.png) no-repeat center / cover';
+			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+				if (
+					!state.wallIndices.includes(
+						wallNeighborVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.endVertex.absoluteIndex
+					)
+				) {
+					action.theme.unvisited(wallNeighborVertex.element);
+				}
+			}
+
+			action.theme.start(vertex);
+		}
+	} else if (state.isEndMouseDown) {
+		if (vertexIndex === action.startVertex.absoluteIndex) {
+			isOverStart = true;
+		} else if (state.wallIndices.includes(vertexIndex)) {
+			isOverWall = true;
+		} else {
+			if (!action.startNeighbors.includes(vertexIndex)) {
+				for (let startNeighborVertex of action.startNeighborsVertices) {
+					if (
+						!state.wallIndices.includes(
+							startNeighborVertex.absoluteIndex
+						)
+					) {
+						action.theme.unvisited(startNeighborVertex.element);
+					}
+				}
+			}
+
+			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+				if (
+					!state.wallIndices.includes(
+						wallNeighborVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.startVertex.absoluteIndex
+					)
+				) {
+					action.theme.unvisited(wallNeighborVertex.element);
+				}
+			}
+
+			action.theme.end(vertex);
 		}
 	} else if (
 		state.isMouseDown &&
@@ -102,10 +151,10 @@ const mouseOver = (state: DragState, action: any): DragState => {
 			state.wallIndices = state.wallIndices.filter(
 				(i) => i !== vertexIndex
 			);
-			vertex.style.backgroundColor = '';
+			action.theme.revertWall(vertex);
 		} else {
 			state.wallIndices.push(vertexIndex);
-			vertex.style.backgroundColor = colors.COLOR_WALL;
+			action.theme.wall(vertex);
 		}
 	}
 
@@ -113,6 +162,7 @@ const mouseOver = (state: DragState, action: any): DragState => {
 		...state,
 		isOverStart,
 		isOverEnd,
+		isOverWall,
 	};
 };
 
@@ -121,38 +171,99 @@ const mouseOut = (state: DragState, action: any): DragState => {
 	let vertexRow = parseInt(vertex.getAttribute('row'));
 	let vertexCol = parseInt(vertex.getAttribute('column'));
 	let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
-	let overStartRow = 0;
-	let overStartCol = 0;
-	let overEndRow = 0;
-	let overEndCol = 0;
-	// let isOverStart = true;
-	// let isOverEnd = true;
+	let overStartRow = state.overStartRow;
+	let overStartCol = state.overStartCol;
+	let overEndRow = state.overEndRow;
+	let overEndCol = state.overEndCol;
+	let overWallRow = state.overWallRow;
+	let overWallCol = state.overWallCol;
+
+	let overWallIndex = Position.indexToAbsolute(
+		state.overWallRow,
+		state.overWallCol,
+		action.numRows,
+		action.numCols
+	);
 
 	if (state.isStartMouseDown) {
 		if (vertexIndex === action.endVertex.absoluteIndex) {
 			for (let endNeighborVertex of action.endNeighborsVertices) {
-				endNeighborVertex.element.style.background = '';
+				if (
+					!state.wallIndices.includes(endNeighborVertex.absoluteIndex)
+				) {
+					action.theme.unvisited(endNeighborVertex.element);
+				}
 			}
-
-			// isOverEnd = false;
+		} else if (state.wallIndices.includes(vertexIndex)) {
+			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+				if (
+					!state.wallIndices.includes(
+						wallNeighborVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.startVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.endVertex.absoluteIndex
+					) &&
+					!(wallNeighborVertex.absoluteIndex === overWallIndex)
+				) {
+					action.theme.unvisited(wallNeighborVertex.element);
+				}
+			}
 		} else if (action.endNeighbors.includes(vertexIndex)) {
 			overEndRow = vertexRow;
 			overEndCol = vertexCol;
-		} else if (!action.endNeighbors.includes(vertexIndex)) {
-			vertex.style.background = '';
+			action.theme.start(vertex);
+		} else if (action.wallNeighbors.includes(vertexIndex)) {
+			overWallRow = vertexRow;
+			overWallCol = vertexCol;
+			action.theme.start(vertex);
+		} else {
+			action.theme.unvisited(vertex);
 		}
 	} else if (state.isEndMouseDown) {
 		if (vertexIndex === action.startVertex.absoluteIndex) {
 			for (let startNeighborVertex of action.startNeighborsVertices) {
-				startNeighborVertex.element.style.background = '';
+				if (
+					!state.wallIndices.includes(
+						startNeighborVertex.absoluteIndex
+					)
+				) {
+					action.theme.unvisited(startNeighborVertex.element);
+				}
 			}
-
-			// isOverStart = false;
+		} else if (state.wallIndices.includes(vertexIndex)) {
+			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+				if (
+					!state.wallIndices.includes(
+						wallNeighborVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.startVertex.absoluteIndex
+					) &&
+					!(
+						wallNeighborVertex.absoluteIndex ===
+						action.endVertex.absoluteIndex
+					) &&
+					!(wallNeighborVertex.absoluteIndex === overWallIndex)
+				) {
+					action.theme.unvisited(wallNeighborVertex.element);
+				}
+			}
 		} else if (action.startNeighbors.includes(vertexIndex)) {
 			overStartRow = vertexRow;
 			overStartCol = vertexCol;
-		} else if (!action.startNeighbors.includes(vertexIndex)) {
-			vertex.style.background = '';
+			action.theme.end(vertex);
+		} else if (action.wallNeighbors.includes(vertexIndex)) {
+			overWallRow = vertexRow;
+			overWallCol = vertexCol;
+			action.theme.end(vertex);
+		} else {
+			action.theme.unvisited(vertex);
 		}
 	}
 
@@ -162,8 +273,8 @@ const mouseOut = (state: DragState, action: any): DragState => {
 		overStartCol,
 		overEndRow,
 		overEndCol,
-		// isOverStart,
-		// isOverEnd,
+		overWallRow,
+		overWallCol,
 	};
 };
 
@@ -176,6 +287,7 @@ const mouseUp = (state: DragState, action: any): DragState => {
 		isRecalculating: false,
 		isOverStart: false,
 		isOverEnd: false,
+		isOverWall: false,
 	};
 };
 

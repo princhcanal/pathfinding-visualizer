@@ -1,5 +1,6 @@
 import { Graph } from './graph';
 import * as GraphTypes from './graphTypes';
+import { PathfindingStates } from '../pathfindingStates';
 
 export const depthFirstSearch = (
 	graph: Graph,
@@ -12,15 +13,16 @@ export const depthFirstSearch = (
 	depthFirstSearchUtil(graph, start, end, visited, pathfindingAnimations);
 
 	for (let i = 0; i < visited.length; i++) {
-		pathfindingAnimations.push({
-			index: visited[i],
-			state: 'PATH',
-		});
+		if (visited[i] !== start && visited[i] !== end)
+			pathfindingAnimations.push({
+				index: visited[i],
+				state: PathfindingStates.PATH,
+			});
 	}
 
 	pathfindingAnimations.push({
 		index: 0,
-		state: 'DONE',
+		state: PathfindingStates.DONE,
 	});
 
 	return pathfindingAnimations;
@@ -37,7 +39,7 @@ const depthFirstSearchUtil = (
 
 	pathfindingAnimations.push({
 		index: start,
-		state: 'VISITING',
+		state: PathfindingStates.VISITING,
 	});
 
 	for (let neighbor of graph.adjacencyList[start]) {

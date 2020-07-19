@@ -1,9 +1,32 @@
 .Vertex {
-	height: 1.5rem;
-	width: 1.5rem;
-	border: 1px solid black;
-	font-size: 80%;
+	/* display: inline-block; */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	font-size: 50%;
 	cursor: default;
+	/* border-left: 0.1px solid var(--color-2); */
+}
+
+.Vertex:last-of-type {
+	/* border-right: 0.1px solid var(--color-2); */
+}
+
+.Vertex > * {
+	z-index: -10;
+}
+
+.Vertex p {
+	text-align: center;
+	font-weight: bold;
+	font-size: large;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .Start:hover {

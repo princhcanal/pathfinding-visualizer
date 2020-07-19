@@ -1,13 +1,10 @@
 import { ActionTypes } from '../actions';
 import { Graph } from '../../utils/pathfinding/algorithms/graph';
 import * as Position from '../../utils/position';
-import * as colors from '../../utils/colors';
 import { RefObject } from 'react';
-// import { dijkstra } from '../../utils/pathfinding/algorithms/dijkstra';
-// import { breadthFirstSearch } from '../../utils/pathfinding/algorithms/breadthFirstSearch';
-// import { greedyBestFirstSearch } from '../../utils/pathfinding/algorithms/greedyBestFirstSearch';
-// import { aStar } from '../../utils/pathfinding/algorithms/aStar';
 import * as algorithms from '../../utils/pathfinding/algorithms';
+import * as GraphThemes from '../../utils/themes';
+import { PathfindingStates } from '../../utils/pathfinding/pathfindingStates';
 
 export interface GraphState {
 	graph: Graph;
@@ -20,10 +17,11 @@ export interface GraphState {
 	wallIndices: number[];
 	isAnimating: boolean;
 	currentAlgorithm: Function;
+	theme: GraphThemes.GraphTheme;
 }
 
 export interface Vertex {
-	element: HTMLElement;
+	element: HTMLDivElement;
 	row: number;
 	column: number;
 	absoluteIndex: number;
@@ -48,6 +46,7 @@ const initialState: GraphState = {
 	wallIndices: [],
 	isAnimating: false,
 	currentAlgorithm: algorithms.dijkstra,
+	theme: GraphThemes.defaultTheme,
 };
 
 const setVerticesRef = (state: GraphState, action: any): GraphState => {
@@ -114,11 +113,9 @@ const setWallIndices = (state: GraphState, action: any): GraphState => {
 const initGraph = (state: GraphState, action: any): GraphState => {
 	let graph = new Graph(state.numRows, state.numCols);
 
-	if (state.startVertex && state.endVertex) {
-		state.startVertex.element.style.background =
-			'url(car.png) no-repeat center / cover';
-		state.endVertex.element.style.background =
-			'url(location.png) no-repeat center / cover';
+	if (state.startVertex && state.endVertex && !action.isSettingWalls) {
+		state.theme.start(state.startVertex.element);
+		state.theme.end(state.endVertex.element);
 	}
 
 	for (let i = 0; i < state.numRows; i++) {
@@ -218,9 +215,28 @@ const clearPath = (state: GraphState, action: any): void => {
 			);
 
 			if (state.wallIndices.includes(vertex.absoluteIndex)) {
-				vertex.element.style.backgroundColor = colors.COLOR_WALL;
-			} else {
-				vertex.element.style.backgroundColor = '';
+				state.theme.wall(vertex.element);
+			} else if (
+				vertex.absoluteIndex === state.startVertex?.absoluteIndex
+			) {
+				if (action.isRecalculating) {
+					state.theme.unvisited(vertex.element);
+				} else {
+					state.theme.start(vertex.element);
+				}
+			} else if (
+				vertex.absoluteIndex === state.endVertex?.absoluteIndex
+			) {
+				if (action.isRecalculating) {
+					state.theme.unvisited(vertex.element);
+				} else {
+					state.theme.end(vertex.element);
+				}
+			} else if (
+				vertex.absoluteIndex !== action.start &&
+				vertex.absoluteIndex !== action.end
+			) {
+				state.theme.unvisited(vertex.element);
 			}
 		}
 	}
@@ -240,7 +256,7 @@ const clearWalls = (state: GraphState, action: any): GraphState => {
 			);
 
 			if (state.wallIndices.includes(vertex.absoluteIndex)) {
-				vertex.element.style.backgroundColor = '';
+				state.theme.revertWall(vertex.element);
 			}
 		}
 	}
@@ -274,7 +290,6 @@ const recalculatePath = (state: GraphState, action: any): void => {
 
 	for (let i = 0; i < animations.length; i++) {
 		let animation = animations[i];
-		let vertices = action.verticesRef.current;
 		let row = Math.floor(animation.index / state.numCols);
 		let column = animation.index % state.numCols;
 		let vertex = Position.getVertex(
@@ -285,28 +300,37 @@ const recalculatePath = (state: GraphState, action: any): void => {
 			action.verticesRef
 		);
 
-		if (animation.state === 'VISITING') {
-			vertex.element.style.backgroundColor = colors.COLOR_VISITING;
+		if (animation.state === PathfindingStates.VISITING) {
+			state.theme.visiting(vertex.element);
 			if (i > 0) {
 				let prevAnimation = animations[i - 1];
 				let prevRow = Math.floor(prevAnimation.index / state.numCols);
 				let prevColumn = prevAnimation.index % state.numCols;
 				let prevVertex: Vertex;
-				if (vertices) {
-					prevVertex = Position.getVertex(
-						prevRow,
-						prevColumn,
-						state.numRows,
-						state.numCols,
-						action.verticesRef
-					);
-					prevVertex.element.style.backgroundColor =
-						colors.COLOR_VISITED;
-				}
+				prevVertex = Position.getVertex(
+					prevRow,
+					prevColumn,
+					state.numRows,
+					state.numCols,
+					action.verticesRef
+				);
+				state.theme.visited(prevVertex.element);
 			}
-		} else if (animation.state === 'PATH') {
-			vertex.element.style.backgroundColor = colors.COLOR_PATH;
-		} else if (animation.state === 'DONE') {
+		} else if (
+			animation.state === PathfindingStates.PATH_HORIZONTAL_START
+		) {
+			state.theme.pathHorizontalStart(vertex.element);
+		} else if (animation.state === PathfindingStates.PATH_VERTICAL_START) {
+			state.theme.pathVerticalStart(vertex.element);
+		} else if (animation.state === PathfindingStates.PATH_HORIZONTAL_END) {
+			state.theme.pathHorizontalEnd(vertex.element);
+		} else if (animation.state === PathfindingStates.PATH_VERTICAL_END) {
+			state.theme.pathVerticalEnd(vertex.element);
+		} else if (animation.state === PathfindingStates.PATH_HORIZONTAL) {
+			state.theme.pathHorizontal(vertex.element);
+		} else if (animation.state === PathfindingStates.PATH_VERTICAL) {
+			state.theme.pathVertical(vertex.element);
+		} else if (animation.state === PathfindingStates.DONE) {
 		}
 	}
 };

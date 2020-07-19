@@ -1,13 +1,40 @@
-body {
-	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-		'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-		'Helvetica Neue', sans-serif;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+@import url(./fonts/montserrat.css);
+
+:root {
+	--color-1: #292f36;
+	--color-2: #4ecdc4;
+	--color-3: #ffffff;
+	--color-4: #ff6b6b;
+
+	--color-default-wall: #292f36;
+	--color-default-visited: '#8d6b94';
+	--color-default-visiting: '#ff6b6b';
+	--color-default-path: '#4ecdc4';
 }
 
-code {
-	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-		monospace;
+*,
+*::after,
+*::before {
+	font-family: inherit;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0 0 2rem;
+	min-height: 100vh;
+	background-color: var(--color-3);
+	font-family: 'Montserrat', sans-serif;
+}
+
+::selection {
+	background-color: var(--color-6);
+	color: var(--color-3);
+}
+
+button,
+select,
+option {
+	outline: none;
+	cursor: pointer;
 }

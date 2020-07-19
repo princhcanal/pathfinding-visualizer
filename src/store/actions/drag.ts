@@ -1,14 +1,17 @@
 import { RefObject } from 'react';
 import { ActionTypes } from './types';
 import * as actions from '../actions';
-import * as position from '../../utils/position';
+import * as Position from '../../utils/position';
 import { Vertex } from '../reducers/graph';
+import { GraphTheme } from '../../utils/themes';
+import { indexToAbsolute } from '../../utils/position';
 
 export const mouseDown = (
 	e: any,
 	isAnimating: boolean,
 	startVertex: Vertex,
-	endVertex: Vertex
+	endVertex: Vertex,
+	theme: GraphTheme
 ) => {
 	return {
 		type: ActionTypes.MOUSE_DOWN,
@@ -16,6 +19,7 @@ export const mouseDown = (
 		isAnimating,
 		startVertex,
 		endVertex,
+		theme,
 	};
 };
 
@@ -25,8 +29,9 @@ export const onMouseDown = (e: any) => {
 		let isAnimating = graph.isAnimating;
 		let startVertex = graph.startVertex;
 		let endVertex = graph.endVertex;
+		let theme = graph.theme;
 
-		dispatch(mouseDown(e, isAnimating, startVertex, endVertex));
+		dispatch(mouseDown(e, isAnimating, startVertex, endVertex, theme));
 	};
 };
 
@@ -40,7 +45,10 @@ export const mouseOver = (
 	startNeighbors: number[],
 	startNeighborsVertices: Vertex[],
 	endNeighbors: number[],
-	endNeighborsVertices: Vertex[]
+	endNeighborsVertices: Vertex[],
+	wallNeighbors: number[],
+	wallNeighborsVertices: Vertex[],
+	theme: GraphTheme
 ) => {
 	return {
 		type: ActionTypes.MOUSE_OVER,
@@ -54,6 +62,9 @@ export const mouseOver = (
 		startNeighborsVertices,
 		endNeighbors,
 		endNeighborsVertices,
+		wallNeighbors,
+		wallNeighborsVertices,
+		theme,
 	};
 };
 
@@ -66,6 +77,8 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		let endVertex = graph.endVertex;
 		let numRows = graph.numRows;
 		let numCols = graph.numCols;
+		let theme = graph.theme;
+		let wallIndices = drag.wallIndices;
 		let startNeighbors = getNeighbors(
 			startVertex.absoluteIndex,
 			startVertex.row,
@@ -78,6 +91,14 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numRows,
 			numCols
 		);
+		let wallNeighbors: number[] = [];
+		for (let wallIndex of wallIndices) {
+			let wallRow = Position.absoluteToIndex(wallIndex, numRows, numCols)
+				.row;
+			wallNeighbors.push(
+				...getNeighbors(wallIndex, wallRow, numRows, numCols)
+			);
+		}
 		let startNeighborsVertices: Vertex[] = getNeighborVertices(
 			startNeighbors,
 			numRows,
@@ -86,6 +107,12 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		);
 		let endNeighborsVertices: Vertex[] = getNeighborVertices(
 			endNeighbors,
+			numRows,
+			numCols,
+			verticesRef
+		);
+		let wallNeighborsVertices: Vertex[] = getNeighborVertices(
+			wallNeighbors,
 			numRows,
 			numCols,
 			verticesRef
@@ -102,40 +129,60 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 				startNeighbors,
 				startNeighborsVertices,
 				endNeighbors,
-				endNeighborsVertices
+				endNeighborsVertices,
+				wallNeighbors,
+				wallNeighborsVertices,
+				theme
 			)
 		);
 
-		if (drag.isStartMouseDown) {
-			// if (drag.isOverEnd) {
-			// 	let startIndex = position.indexToAbsolute(
-			// 		drag.overStartRow,
-			// 		drag.overStartCol,
-			// 		numRows,
-			// 		numCols
-			// 	);
-			// 	dispatch(
-			// 		actions.onRecalculatePath(
-			// 			startIndex,
-			// 			endVertex.absoluteIndex,
-			// 			verticesRef
-			// 		)
-			// 	);
-			// } else {
+		let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
+		let overEndRow = drag.overEndRow;
+		let overEndCol = drag.overEndCol;
+		let overStartRow = drag.overStartRow;
+		let overStartCol = drag.overStartCol;
+		let overWallRow = drag.overWallRow;
+		let overWallCol = drag.overWallCol;
+
+		let overEndIndex = indexToAbsolute(
+			overEndRow,
+			overEndCol,
+			numRows,
+			numCols
+		);
+		let overStartIndex = indexToAbsolute(
+			overStartRow,
+			overStartCol,
+			numRows,
+			numCols
+		);
+		let overWallIndex = indexToAbsolute(
+			overWallRow,
+			overWallCol,
+			numRows,
+			numCols
+		);
+
+		if (drag.isStartMouseDown && drag.isDoneAnimating) {
 			dispatch(
 				actions.onRecalculatePath(
-					parseInt(vertex.getAttribute('absoluteIndex')),
+					vertexIndex,
 					endVertex.absoluteIndex,
-					verticesRef
+					verticesRef,
+					overEndIndex,
+					overStartIndex,
+					overWallIndex
 				)
 			);
-			// }
-		} else if (drag.isEndMouseDown) {
+		} else if (drag.isEndMouseDown && drag.isDoneAnimating) {
 			dispatch(
 				actions.onRecalculatePath(
 					startVertex.absoluteIndex,
-					parseInt(vertex.getAttribute('absoluteIndex')),
-					verticesRef
+					vertexIndex,
+					verticesRef,
+					overEndIndex,
+					overStartIndex,
+					overWallIndex
 				)
 			);
 		}
@@ -152,7 +199,10 @@ export const mouseOut = (
 	startNeighbors: number[],
 	startNeighborsVertices: Vertex[],
 	endNeighbors: number[],
-	endNeighborsVertices: Vertex[]
+	endNeighborsVertices: Vertex[],
+	wallNeighbors: number[],
+	wallNeighborsVertices: Vertex[],
+	theme: GraphTheme
 ) => {
 	return {
 		type: ActionTypes.MOUSE_OUT,
@@ -166,17 +216,23 @@ export const mouseOut = (
 		startNeighborsVertices,
 		endNeighbors,
 		endNeighborsVertices,
+		wallNeighbors,
+		wallNeighborsVertices,
+		theme,
 	};
 };
 
 export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 	return (dispatch: any, getState: any) => {
 		let graph = getState().graph;
+		let drag = getState().drag;
 		let startVertex = graph.startVertex;
 		let endVertex = graph.endVertex;
 		let numRows = graph.numRows;
 		let numCols = graph.numCols;
 		let verticesRef = graph.verticesRef;
+		let theme = graph.theme;
+		let wallIndices = drag.wallIndices;
 		let startNeighbors = getNeighbors(
 			startVertex.absoluteIndex,
 			startVertex.row,
@@ -189,6 +245,14 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numRows,
 			numCols
 		);
+		let wallNeighbors: number[] = [];
+		for (let wallIndex of wallIndices) {
+			let wallRow = Position.absoluteToIndex(wallIndex, numRows, numCols)
+				.row;
+			wallNeighbors.push(
+				...getNeighbors(wallIndex, wallRow, numRows, numCols)
+			);
+		}
 		let startNeighborsVertices: Vertex[] = getNeighborVertices(
 			startNeighbors,
 			numRows,
@@ -197,6 +261,12 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		);
 		let endNeighborsVertices: Vertex[] = getNeighborVertices(
 			endNeighbors,
+			numRows,
+			numCols,
+			verticesRef
+		);
+		let wallNeighborsVertices: Vertex[] = getNeighborVertices(
+			wallNeighbors,
 			numRows,
 			numCols,
 			verticesRef
@@ -213,13 +283,15 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 				startNeighbors,
 				startNeighborsVertices,
 				endNeighbors,
-				endNeighborsVertices
+				endNeighborsVertices,
+				wallNeighbors,
+				wallNeighborsVertices,
+				theme
 			)
 		);
 	};
 };
 
-// FIXME: doesn't work on top-most and bottom-most vertices
 const getNeighbors = (
 	absoluteIndex: number,
 	row: number,
@@ -227,7 +299,7 @@ const getNeighbors = (
 	numCols: number
 ): number[] => {
 	return Object.values(
-		position.getNeighbors(absoluteIndex, row, numRows, numCols)
+		Position.getNeighbors(absoluteIndex, row, numRows, numCols)
 	);
 };
 
@@ -240,9 +312,15 @@ const getNeighborVertices = (
 	let neighborVertices: Vertex[] = [];
 
 	for (let neighbor of neighbors) {
-		neighborVertices.push(
-			position.getVertexAbsolute(neighbor, numRows, numCols, verticesRef)
-		);
+		if (neighbor >= 0)
+			neighborVertices.push(
+				Position.getVertexAbsolute(
+					neighbor,
+					numRows,
+					numCols,
+					verticesRef
+				)
+			);
 	}
 
 	return neighborVertices;
@@ -267,6 +345,10 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 				dispatch(
 					actions.setStartVertex(drag.overEndRow, drag.overEndCol)
 				);
+			} else if (drag.isOverWall) {
+				dispatch(
+					actions.setStartVertex(drag.overWallRow, drag.overWallCol)
+				);
 			} else {
 				dispatch(actions.setStartVertex(vertexRow, vertexCol));
 			}
@@ -274,6 +356,10 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			if (drag.isOverStart) {
 				dispatch(
 					actions.setEndVertex(drag.overStartRow, drag.overStartCol)
+				);
+			} else if (drag.isOverWall) {
+				dispatch(
+					actions.setEndVertex(drag.overWallRow, drag.overWallCol)
 				);
 			} else {
 				dispatch(actions.setEndVertex(vertexRow, vertexCol));

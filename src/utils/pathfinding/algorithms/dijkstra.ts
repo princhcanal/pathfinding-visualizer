@@ -1,6 +1,8 @@
 import { Graph } from './graph';
 import { PriorityQueue } from './priorityQueue';
 import * as GraphTypes from './graphTypes';
+import { PathfindingStates } from '../pathfindingStates';
+import { buildPath } from './buildPath';
 
 export const dijkstra = (
 	graph: Graph,
@@ -22,29 +24,19 @@ export const dijkstra = (
 
 		pathfindingAnimation.push({
 			index: current.node,
-			state: 'VISITING',
+			state: PathfindingStates.VISITING,
 		});
 
 		if (current.node === end) {
-			let currentNode = current.node;
-			while (previous[currentNode]) {
-				path.push(currentNode);
-				currentNode = previous[currentNode];
-			}
-			path.push(start);
-			path.reverse();
-
-			for (let i = 0; i < path.length; i++) {
-				pathfindingAnimation.push({
-					index: path[i],
-					state: 'PATH',
-				});
-			}
-
-			pathfindingAnimation.push({
-				index: 0,
-				state: 'DONE',
-			});
+			buildPath(
+				pathfindingAnimation,
+				current.node,
+				previous,
+				path,
+				start,
+				end,
+				graph
+			);
 
 			break;
 		}
@@ -61,9 +53,6 @@ export const dijkstra = (
 				previous[neighbor.node] = current.node;
 			}
 		}
-
-		// let currentNodes = [...nodes.values];
-		// console.log(currentNodes);
 	}
 
 	return pathfindingAnimation;
