@@ -1,8 +1,10 @@
 .Vertices {
 	display: flex;
 	flex-direction: column;
+	justify-content: center;
 	align-items: center;
 	width: 90%;
 	margin: 0 auto;
-	height: 80vh;
+	padding: 0 0 1rem;
+	height: 90vh;
 }

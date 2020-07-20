@@ -7,14 +7,16 @@ export const defaultTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/car.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'grab';
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/location.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'grab';
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_GRASS;
@@ -26,6 +28,7 @@ export const defaultTheme: GraphTheme = {
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
+		vertex.style.cursor = 'url(/treeCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_VISITED;
@@ -38,27 +41,27 @@ export const defaultTheme: GraphTheme = {
 			'url(/car.png), url(/road-horizontal.jpg)';
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = 'cover, cover';
+		vertex.style.backgroundSize = '90%, cover';
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundImage = 'url(/car.png), url(/road-vertical.jpg)';
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = 'cover, cover';
+		vertex.style.backgroundSize = '90%, cover';
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundImage =
 			'url(/location.png), url(/road-horizontal.jpg)';
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = 'cover, cover';
+		vertex.style.backgroundSize = '90%, cover';
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundImage =
 			'url(/location.png), url(/road-vertical.jpg)';
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = 'cover, cover';
+		vertex.style.backgroundSize = '90%, cover';
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundImage = 'url(/road-horizontal.jpg)';

@@ -28,12 +28,8 @@ export interface Vertex {
 }
 
 // DEFAULTS
-const NUM_ROWS = 20;
-const NUM_COLS = 40;
-const START_ROW = Math.floor(NUM_ROWS / 2);
-const START_COL = Math.floor(NUM_COLS / 4);
-const END_ROW = Math.floor(NUM_ROWS / 2) + 4;
-const END_COL = Math.floor((NUM_COLS / 4) * 3);
+const NUM_ROWS = 17;
+const NUM_COLS = 33;
 
 const initialState: GraphState = {
 	verticesRef: null,
@@ -50,26 +46,9 @@ const initialState: GraphState = {
 };
 
 const setVerticesRef = (state: GraphState, action: any): GraphState => {
-	let startVertex = Position.getVertex(
-		START_ROW,
-		START_COL,
-		NUM_ROWS,
-		NUM_COLS,
-		action.verticesRef
-	);
-	let endVertex = Position.getVertex(
-		END_ROW,
-		END_COL,
-		NUM_ROWS,
-		NUM_COLS,
-		action.verticesRef
-	);
-
 	return {
 		...state,
 		verticesRef: action.verticesRef,
-		startVertex,
-		endVertex,
 	};
 };
 
@@ -79,7 +58,7 @@ const setStartVertex = (state: GraphState, action: any): GraphState => {
 		action.startCol,
 		state.numRows,
 		state.numCols,
-		state.verticesRef as RefObject<HTMLDivElement>
+		action.verticesRef
 	);
 
 	return {
@@ -94,7 +73,7 @@ const setEndVertex = (state: GraphState, action: any): GraphState => {
 		action.endCol,
 		state.numRows,
 		state.numCols,
-		state.verticesRef as RefObject<HTMLDivElement>
+		action.verticesRef
 	);
 
 	return {
@@ -107,6 +86,20 @@ const setWallIndices = (state: GraphState, action: any): GraphState => {
 	return {
 		...state,
 		wallIndices: action.wallIndices,
+	};
+};
+
+const setNumRows = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		numRows: action.numRows,
+	};
+};
+
+const setNumCols = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		numCols: action.numCols,
 	};
 };
 
@@ -365,6 +358,10 @@ export const graphReducer = (
 			return state;
 		case ActionTypes.SET_CURRENT_ALGORITHM:
 			return setCurrentAlgorithm(state, action);
+		case ActionTypes.SET_NUM_ROWS:
+			return setNumRows(state, action);
+		case ActionTypes.SET_NUM_COLS:
+			return setNumCols(state, action);
 		default:
 			return state;
 	}

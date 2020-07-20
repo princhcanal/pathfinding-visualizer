@@ -32,9 +32,7 @@ const Vertex = (props: VertexRef) => {
 				dispatch(actions.onMouseUp(e, props.verticesRef));
 			}}
 		>
-			{/* {props.absoluteIndex} */}
-			{/* <p>{props.absoluteIndex}</p> */}
-			<p>.</p>
+			<p>&bull;</p>
 		</div>
 	);
 };

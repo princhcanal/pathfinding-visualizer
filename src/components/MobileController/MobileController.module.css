@@ -1,0 +1,126 @@
+.MobileController {
+	/* display: none; */
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 90%;
+	margin: 0 auto 10rem;
+	background-color: rgba(0, 0, 0, 0.2);
+	border-radius: 0.3rem;
+	padding: 2rem 0;
+}
+
+.MobileController button {
+	border: none;
+	border-radius: 0.3rem;
+	padding: 0.5rem 0.7rem;
+	background-color: var(--color-1);
+	color: var(--color-4);
+}
+
+.MobileController button.Selected {
+	border: 2px solid var(--color-4);
+}
+
+/* @media (hover: none) {
+	.MobileController {
+		display: block;
+	}
+} */
+
+.StartEndContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-basis: 30%;
+}
+
+.StartEnd {
+	display: flex;
+	justify-content: space-between;
+	flex-basis: 50%;
+}
+
+.DPadContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-basis: 30%;
+}
+
+.DPad {
+	display: flex;
+	flex-direction: column;
+	flex-basis: 40%;
+}
+
+.Row_1,
+.Row_3 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.Row_1 {
+	padding-bottom: 0.5rem;
+}
+
+.Row_2 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.Row_3 {
+	padding-top: 0.5rem;
+}
+
+@media only screen and (max-width: 1000px) {
+	.DPad {
+		flex-basis: 45%;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	.Row_1 {
+		padding-bottom: 0.7rem;
+	}
+
+	.Row_3 {
+		padding-top: 0.7rem;
+	}
+	.DPad {
+		flex-basis: 55%;
+	}
+}
+
+@media only screen and (max-width: 700px) {
+	.DPad {
+		flex-basis: 65%;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.DPad {
+		flex-basis: 75%;
+	}
+}
+
+@media only screen and (max-width: 500px) {
+	.DPad {
+		flex-basis: 85%;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	.DPad {
+		flex-basis: 100%;
+	}
+}
+
+.ShowControlsContainer {
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

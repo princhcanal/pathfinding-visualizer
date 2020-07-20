@@ -21,19 +21,29 @@ export const setVerticesRef = (verticesRef: RefObject<HTMLDivElement>) => {
 	};
 };
 
-export const setStartVertex = (startRow: number, startCol: number) => {
+export const setStartVertex = (
+	startRow: number,
+	startCol: number,
+	verticesRef: RefObject<HTMLDivElement>
+) => {
 	return {
 		type: ActionTypes.SET_START_VERTEX,
 		startRow,
 		startCol,
+		verticesRef,
 	};
 };
 
-export const setEndVertex = (endRow: number, endCol: number) => {
+export const setEndVertex = (
+	endRow: number,
+	endCol: number,
+	verticesRef: RefObject<HTMLDivElement>
+) => {
 	return {
 		type: ActionTypes.SET_END_VERTEX,
 		endRow,
 		endCol,
+		verticesRef,
 	};
 };
 
@@ -167,5 +177,19 @@ export const setCurrentAlgorithm = (algorithm: string) => {
 	return {
 		type: ActionTypes.SET_CURRENT_ALGORITHM,
 		currentAlgorithm: pathfindingAlgorithms[algorithm],
+	};
+};
+
+export const setNumRows = (numRows: number) => {
+	return {
+		type: ActionTypes.SET_NUM_ROWS,
+		numRows,
+	};
+};
+
+export const setNumCols = (numCols: number) => {
+	return {
+		type: ActionTypes.SET_NUM_COLS,
+		numCols,
 	};
 };

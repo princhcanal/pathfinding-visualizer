@@ -1,0 +1,64 @@
+.Controller {
+	color: var(--color-4);
+	/* background-color: var(--color-1); */
+	width: 90%;
+	margin: 0 auto;
+	border-radius: 0.3rem;
+	/* box-shadow: 0.5rem 0.6rem 1rem rgba(41, 47, 54, 0.2); */
+	/* border: 1px solid var(--color-1); */
+}
+
+.Buttons {
+	display: flex;
+	justify-content: space-around;
+	padding: 1rem 0;
+	/* border: 1px solid var(--color-1); */
+}
+
+.Button {
+	font-size: inherit;
+	background-color: transparent;
+	border: none;
+	transition: all 0.2s;
+	color: inherit;
+	padding: 0.5rem 1rem;
+	border-radius: 0.3rem;
+}
+
+.Button:hover {
+	background-color: var(--color-4);
+	color: var(--color-3);
+}
+
+@media (hover: none) {
+	.Button:hover {
+		background-color: transparent;
+		color: inherit;
+	}
+}
+
+.Dropdowns {
+	display: flex;
+	justify-content: space-around;
+	padding: 1rem 0;
+	/* border: 1px solid var(--color-1); */
+}
+
+.Dropdown {
+	background-color: var(--color-4);
+	color: var(--color-3);
+	border: none;
+	text-align-last: center;
+	transition: all 0.2s;
+	border-radius: 0.3rem;
+	padding: 0.5rem 1rem;
+	margin-left: 1rem;
+}
+
+.Dropdown:active {
+	outline: none;
+}
+
+.Dropdown option {
+	background-color: var(--color-1);
+}

@@ -72,9 +72,19 @@ const Vertices = (props: VerticesProps, ref: any) => {
 		) {
 			dispatch(Actions.mouseUp(e));
 			dispatch(
-				Actions.setStartVertex(startVertex?.row, startVertex?.column)
+				Actions.setStartVertex(
+					startVertex?.row,
+					startVertex?.column,
+					verticesRef
+				)
 			);
-			dispatch(Actions.setEndVertex(endVertex?.row, endVertex?.column));
+			dispatch(
+				Actions.setEndVertex(
+					endVertex?.row,
+					endVertex?.column,
+					verticesRef
+				)
+			);
 			dispatch(
 				Actions.clearPath(
 					verticesRef,

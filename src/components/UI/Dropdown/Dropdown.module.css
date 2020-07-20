@@ -1,2 +1,92 @@
 .Dropdown {
+	display: flex;
+	align-items: center;
+}
+
+.Label {
+	font-size: 1rem;
+}
+
+.Heading {
+	background-color: var(--color-4);
+	color: var(--color-3);
+	border-radius: 0.3rem;
+	text-align: center;
+	font-size: 1.3rem;
+	font-weight: 400;
+	cursor: pointer;
+	position: relative;
+	padding: 0.3rem 0;
+}
+
+.Caret {
+	position: absolute;
+	right: 3%;
+	top: 50%;
+	font-size: 2.5rem;
+	transform: translateY(-50%) rotate(90deg);
+	transform-origin: center;
+	transition: transform 0.3s;
+}
+
+.CaretRotate {
+	transform: translateY(-50%) rotate(270deg);
+}
+
+.List {
+	list-style: none;
+	padding: 0;
+	margin: 0 0 0 1rem;
+	position: relative;
+	width: 21rem;
+}
+
+.Options {
+	position: absolute;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-1);
+	border-radius: 0.3rem;
+	padding: 0.3rem;
+	height: 9.6rem;
+	transition: height 0.3s, padding 0.3s;
+}
+
+.OptionsHidden {
+	height: 0;
+	padding: 0;
+	/* z-index: -10; */
+}
+
+.OptionsZIndex {
+	z-index: -10;
+}
+
+.Option {
+	cursor: pointer;
+	padding: 0.3rem 0.5rem;
+	transition: opacity 0.3s, display 0.3s 0.3s, background-color 0.2s,
+		color 0.2s;
+	display: block;
+	opacity: 1;
+}
+
+.OptionHidden {
+	opacity: 0;
+}
+
+.Option:hover {
+	background-color: var(--color-4);
+	color: var(--color-3);
+}
+
+.Option:first-of-type {
+	border-top-left-radius: 0.3rem;
+	border-top-right-radius: 0.3rem;
+}
+
+.Option:last-of-type {
+	border-bottom-left-radius: 0.3rem;
+	border-bottom-right-radius: 0.3rem;
 }

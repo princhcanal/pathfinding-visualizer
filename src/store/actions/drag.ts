@@ -312,7 +312,7 @@ const getNeighborVertices = (
 	let neighborVertices: Vertex[] = [];
 
 	for (let neighbor of neighbors) {
-		if (neighbor >= 0)
+		if (neighbor >= 0 && neighbor < numRows * numCols)
 			neighborVertices.push(
 				Position.getVertexAbsolute(
 					neighbor,
@@ -343,26 +343,46 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		if (drag.isStartMouseDown) {
 			if (drag.isOverEnd) {
 				dispatch(
-					actions.setStartVertex(drag.overEndRow, drag.overEndCol)
+					actions.setStartVertex(
+						drag.overEndRow,
+						drag.overEndCol,
+						verticesRef
+					)
 				);
 			} else if (drag.isOverWall) {
 				dispatch(
-					actions.setStartVertex(drag.overWallRow, drag.overWallCol)
+					actions.setStartVertex(
+						drag.overWallRow,
+						drag.overWallCol,
+						verticesRef
+					)
 				);
 			} else {
-				dispatch(actions.setStartVertex(vertexRow, vertexCol));
+				dispatch(
+					actions.setStartVertex(vertexRow, vertexCol, verticesRef)
+				);
 			}
 		} else if (drag.isEndMouseDown) {
 			if (drag.isOverStart) {
 				dispatch(
-					actions.setEndVertex(drag.overStartRow, drag.overStartCol)
+					actions.setEndVertex(
+						drag.overStartRow,
+						drag.overStartCol,
+						verticesRef
+					)
 				);
 			} else if (drag.isOverWall) {
 				dispatch(
-					actions.setEndVertex(drag.overWallRow, drag.overWallCol)
+					actions.setEndVertex(
+						drag.overWallRow,
+						drag.overWallCol,
+						verticesRef
+					)
 				);
 			} else {
-				dispatch(actions.setEndVertex(vertexRow, vertexCol));
+				dispatch(
+					actions.setEndVertex(vertexRow, vertexCol, verticesRef)
+				);
 			}
 		} else if (drag.isMouseDown) {
 			dispatch(actions.onSetWallIndices(drag.wallIndices, verticesRef));

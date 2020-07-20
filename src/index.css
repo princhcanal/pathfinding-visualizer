@@ -19,16 +19,37 @@
 	box-sizing: border-box;
 }
 
+html {
+	font-size: 100%;
+}
+
+@media only screen and (max-width: 485px) {
+	html {
+		font-size: 80%;
+	}
+}
+
+@media only screen and (max-width: 391px) {
+	html {
+		font-size: 70%;
+	}
+}
+
+@media only screen and (max-width: 344px) {
+	html {
+		font-size: 60%;
+	}
+}
+
 body {
 	margin: 0;
-	padding: 0 0 2rem;
 	min-height: 100vh;
 	background-color: var(--color-3);
 	font-family: 'Montserrat', sans-serif;
 }
 
 ::selection {
-	background-color: var(--color-6);
+	background-color: var(--color-4);
 	color: var(--color-3);
 }
 

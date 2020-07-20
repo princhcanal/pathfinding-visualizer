@@ -44,11 +44,13 @@ const mouseDown = (state: DragState, action: any): DragState => {
 	let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
 
 	if (vertexIndex === action.startVertex.absoluteIndex) {
+		vertex.style.cursor = 'grabbing';
 		return {
 			...state,
 			isStartMouseDown: true,
 		};
 	} else if (vertexIndex === action.endVertex.absoluteIndex) {
+		vertex.style.cursor = 'grabbing';
 		return {
 			...state,
 			isEndMouseDown: true,
@@ -107,6 +109,7 @@ const mouseOver = (state: DragState, action: any): DragState => {
 			}
 
 			action.theme.start(vertex);
+			vertex.style.cursor = 'grabbing';
 		}
 	} else if (state.isEndMouseDown) {
 		if (vertexIndex === action.startVertex.absoluteIndex) {
@@ -141,6 +144,7 @@ const mouseOver = (state: DragState, action: any): DragState => {
 			}
 
 			action.theme.end(vertex);
+			vertex.style.cursor = 'grabbing';
 		}
 	} else if (
 		state.isMouseDown &&
@@ -279,6 +283,12 @@ const mouseOut = (state: DragState, action: any): DragState => {
 };
 
 const mouseUp = (state: DragState, action: any): DragState => {
+	const vertex = action.e.target;
+
+	if (state.isStartMouseDown || state.isEndMouseDown) {
+		vertex.style.cursor = 'grab';
+	}
+
 	return {
 		...state,
 		isStartMouseDown: false,
