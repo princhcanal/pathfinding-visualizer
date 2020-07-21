@@ -12,6 +12,8 @@ import { PathfindingStates } from '../../utils/pathfinding/pathfindingStates';
 
 import Dropdown from '../UI/Dropdown/Dropdown';
 import { pathfindingOptions } from '../../utils/pathfinding/pathfindingOptions';
+import { obstacleOptions } from '../../utils/obstacleOptions';
+import { themeOptions } from '../../utils/themeOptions';
 
 interface ControllerProps {
 	classNames?: string[];
@@ -46,6 +48,9 @@ const Controller = (props: ControllerProps) => {
 	);
 	const theme = useSelector<StoreState, GraphTheme>(
 		(state) => state.graph.theme
+	);
+	const obstacleRef = useSelector<StoreState, number[] | null>(
+		(state) => state.drag.obstacleRef
 	);
 
 	const handleAnimation = (start: number, end: number) => {
@@ -129,8 +134,9 @@ const Controller = (props: ControllerProps) => {
 		dispatch(Actions.setIsDoneAnimating(false));
 		dispatch(Actions.clearPath(props.verticesRef));
 	};
-	const handleClearWalls = () =>
+	const handleClearObstacles = () => {
 		dispatch(Actions.onClearWalls(props.verticesRef));
+	};
 	const handleReset = () => {
 		dispatch(Actions.setIsAnimating(false));
 		dispatch(Actions.setIsDoneAnimating(false));
@@ -162,15 +168,47 @@ const Controller = (props: ControllerProps) => {
 		);
 	};
 
+	const handleObstacleChanged = (e: MouseEvent<HTMLLIElement>) => {
+		dispatch(
+			Actions.onSetObstacleRef(
+				e.currentTarget.getAttribute('value') as string
+			)
+		);
+	};
+
+	const handleThemeChanged = (e: MouseEvent<HTMLLIElement>) => {
+		// dispatch(Actions.setTheme());
+	};
+
 	return (
 		<div className={classNames.join(' ')}>
 			<div className={styles.Dropdowns}>
 				<Dropdown
 					name='pathfinding-algorithms'
+					default='Dijkstra'
 					options={pathfindingOptions}
 					onChange={handleAlgorithmChanged}
 					classNames={[styles.Dropdown]}
 					label='Algorithm:'
+					width='21rem'
+				></Dropdown>
+				<Dropdown
+					name='obstacles'
+					default='Tree'
+					options={obstacleOptions}
+					onChange={handleObstacleChanged}
+					classNames={[styles.Dropdown]}
+					label='Obstacle:'
+					width='15rem'
+				></Dropdown>
+				<Dropdown
+					name='themes'
+					default='Default'
+					options={themeOptions}
+					onChange={handleThemeChanged}
+					classNames={[styles.Dropdown]}
+					label='Theme:'
+					width='10rem'
 				></Dropdown>
 			</div>
 			<div className={styles.Buttons}>
@@ -180,8 +218,11 @@ const Controller = (props: ControllerProps) => {
 				<button className={styles.Button} onClick={handleClearPath}>
 					Clear path
 				</button>
-				<button className={styles.Button} onClick={handleClearWalls}>
-					Clear Walls
+				<button
+					className={styles.Button}
+					onClick={handleClearObstacles}
+				>
+					Clear Obstacles
 				</button>
 				<button className={styles.Button} onClick={handleReset}>
 					Reset

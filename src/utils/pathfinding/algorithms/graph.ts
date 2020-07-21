@@ -12,7 +12,7 @@ export class Graph {
 		if (!this.adjacencyList[vertex]) this.adjacencyList[vertex] = [];
 	}
 
-	addEdge(vertex1: number, vertex2: number, weight: number = 0) {
+	addEdge(vertex1: number, vertex2: number, weight: number = 1) {
 		let indices = Position.absoluteToIndex(
 			vertex2,
 			this.numRows,

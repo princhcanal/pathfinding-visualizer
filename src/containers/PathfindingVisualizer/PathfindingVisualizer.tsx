@@ -14,7 +14,6 @@ import { StoreState } from '../../store/reducers';
 interface PathfindingVisualizerProps {}
 
 // TODO: implement controls section
-// TODO: implement adding weighted walls (land weight 1, water weight 2, mountain weight 3)
 // TODO: implement mobile controls
 // TODO: implement themes (Road, Avengers, Star Wars, Pokemon, The Office, Friends, One Piece)
 // TODO: remove verticesRef on graph actions
@@ -30,12 +29,37 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	const numCols = useSelector<StoreState, number>(
 		(state) => state.graph.numCols
 	);
+	const dragWallIndices = useSelector<StoreState, number[]>(
+		(state) => state.drag.wallIndices
+	);
+	// const graphWallIndices = useSelector<StoreState, number[]>(
+	// 	(state) => state.graph.wallIndices
+	// );
+	// const dragObstacle1Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.drag.obstacle1Indices
+	// );
+	// const graphObstacle1Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.graph.obstacle1Indices
+	// );
+	// const dragObstacle2Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.drag.obstacle2Indices
+	// );
+	// const graphObstacle2Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.graph.obstacle2Indices
+	// );
+	// const dragObstacle3Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.drag.obstacle3Indices
+	// );
+	// const graphObstacle3Indices = useSelector<StoreState, number[]>(
+	// 	(state) => state.graph.obstacle3Indices
+	// );
 
 	const verticesRef = useRef<HTMLDivElement>(null);
 
 	useLayoutEffect(() => {
 		dispatch(Actions.setVerticesRef(verticesRef));
-	}, [dispatch]);
+		dispatch(Actions.setObstacleRef(dragWallIndices));
+	}, [dispatch, dragWallIndices]);
 
 	useLayoutEffect(() => {
 		dispatch(
@@ -57,11 +81,14 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	useEffect(() => {
 		dispatch(Actions.initGraph(verticesRef));
 		dispatch(Actions.clearPath(verticesRef));
-		dispatch(Actions.clearWalls(verticesRef));
+		dispatch(Actions.onClearWalls(verticesRef));
 	}, [dispatch, numRows, numCols]);
 
 	// const handleTest = () => {
-	// 	console.log(startVertex?.element, endVertex?.element);
+	// 	console.log(dragWallIndices, graphWallIndices);
+	// 	console.log(dragObstacle1Indices, graphObstacle1Indices);
+	// 	console.log(dragObstacle2Indices, graphObstacle2Indices);
+	// 	console.log(dragObstacle3Indices, graphObstacle3Indices);
 	// };
 
 	return (

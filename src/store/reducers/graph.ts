@@ -15,6 +15,9 @@ export interface GraphState {
 	numCols: number;
 	setTimeouts: NodeJS.Timeout[];
 	wallIndices: number[];
+	obstacle1Indices: number[];
+	obstacle2Indices: number[];
+	obstacle3Indices: number[];
 	isAnimating: boolean;
 	currentAlgorithm: Function;
 	theme: GraphThemes.GraphTheme;
@@ -40,6 +43,9 @@ const initialState: GraphState = {
 	numCols: NUM_COLS,
 	setTimeouts: [],
 	wallIndices: [],
+	obstacle1Indices: [],
+	obstacle2Indices: [],
+	obstacle3Indices: [],
 	isAnimating: false,
 	currentAlgorithm: algorithms.dijkstra,
 	theme: GraphThemes.defaultTheme,
@@ -86,6 +92,27 @@ const setWallIndices = (state: GraphState, action: any): GraphState => {
 	return {
 		...state,
 		wallIndices: action.wallIndices,
+	};
+};
+
+const setObstacle1Indices = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		obstacle1Indices: action.obstacle1Indices,
+	};
+};
+
+const setObstacle2Indices = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		obstacle2Indices: action.obstacle2Indices,
+	};
+};
+
+const setObstacle3Indices = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		obstacle3Indices: action.obstacle3Indices,
 	};
 };
 
@@ -147,13 +174,21 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 				state.numRows,
 				state.numCols
 			);
+			let weight = 1;
 
 			// adds right neighbor edge
 			if (
 				neighbors.right >= 0 &&
 				!state.wallIndices.includes(neighbors.right)
 			) {
-				graph.addEdge(idx, neighbors.right, 1);
+				if (state.obstacle1Indices.includes(neighbors.right)) {
+					weight = 2;
+				} else if (state.obstacle2Indices.includes(neighbors.right)) {
+					weight = 3;
+				} else if (state.obstacle3Indices.includes(neighbors.right)) {
+					weight = 4;
+				}
+				graph.addEdge(idx, neighbors.right, weight);
 			}
 
 			// adds left neighbor edge
@@ -161,7 +196,14 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 				neighbors.left >= 0 &&
 				!state.wallIndices.includes(neighbors.left)
 			) {
-				graph.addEdge(idx, neighbors.left, 1);
+				if (state.obstacle1Indices.includes(neighbors.left)) {
+					weight = 2;
+				} else if (state.obstacle2Indices.includes(neighbors.left)) {
+					weight = 3;
+				} else if (state.obstacle3Indices.includes(neighbors.left)) {
+					weight = 4;
+				}
+				graph.addEdge(idx, neighbors.left, weight);
 			}
 
 			// adds bottom neighbor edge
@@ -169,7 +211,14 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 				neighbors.bottom >= 0 &&
 				!state.wallIndices.includes(neighbors.bottom)
 			) {
-				graph.addEdge(idx, neighbors.bottom, 1);
+				if (state.obstacle1Indices.includes(neighbors.bottom)) {
+					weight = 2;
+				} else if (state.obstacle2Indices.includes(neighbors.bottom)) {
+					weight = 3;
+				} else if (state.obstacle3Indices.includes(neighbors.bottom)) {
+					weight = 4;
+				}
+				graph.addEdge(idx, neighbors.bottom, weight);
 			}
 
 			// adds top neighbor edge
@@ -177,7 +226,14 @@ const initGraph = (state: GraphState, action: any): GraphState => {
 				neighbors.top >= 0 &&
 				!state.wallIndices.includes(neighbors.top)
 			) {
-				graph.addEdge(idx, neighbors.top, 1);
+				if (state.obstacle1Indices.includes(neighbors.top)) {
+					weight = 2;
+				} else if (state.obstacle2Indices.includes(neighbors.top)) {
+					weight = 3;
+				} else if (state.obstacle3Indices.includes(neighbors.top)) {
+					weight = 4;
+				}
+				graph.addEdge(idx, neighbors.top, weight);
 			}
 		}
 	}
@@ -209,6 +265,12 @@ const clearPath = (state: GraphState, action: any): void => {
 
 			if (state.wallIndices.includes(vertex.absoluteIndex)) {
 				state.theme.wall(vertex.element);
+			} else if (state.obstacle1Indices.includes(vertex.absoluteIndex)) {
+				state.theme.obstacle1(vertex.element);
+			} else if (state.obstacle2Indices.includes(vertex.absoluteIndex)) {
+				state.theme.obstacle2(vertex.element);
+			} else if (state.obstacle3Indices.includes(vertex.absoluteIndex)) {
+				state.theme.obstacle3(vertex.element);
 			} else if (
 				vertex.absoluteIndex === state.startVertex?.absoluteIndex
 			) {
@@ -248,8 +310,13 @@ const clearWalls = (state: GraphState, action: any): GraphState => {
 				action.verticesRef
 			);
 
-			if (state.wallIndices.includes(vertex.absoluteIndex)) {
-				state.theme.revertWall(vertex.element);
+			if (
+				state.wallIndices.includes(vertex.absoluteIndex) ||
+				state.obstacle1Indices.includes(vertex.absoluteIndex) ||
+				state.obstacle2Indices.includes(vertex.absoluteIndex) ||
+				state.obstacle3Indices.includes(vertex.absoluteIndex)
+			) {
+				state.theme.revertObstacle(vertex.element);
 			}
 		}
 	}
@@ -257,6 +324,9 @@ const clearWalls = (state: GraphState, action: any): GraphState => {
 	return {
 		...state,
 		wallIndices: [],
+		obstacle1Indices: [],
+		obstacle2Indices: [],
+		obstacle3Indices: [],
 	};
 };
 
@@ -362,6 +432,12 @@ export const graphReducer = (
 			return setNumRows(state, action);
 		case ActionTypes.SET_NUM_COLS:
 			return setNumCols(state, action);
+		case ActionTypes.SET_OBSTACLE_1_INDICES:
+			return setObstacle1Indices(state, action);
+		case ActionTypes.SET_OBSTACLE_2_INDICES:
+			return setObstacle2Indices(state, action);
+		case ActionTypes.SET_OBSTACLE_3_INDICES:
+			return setObstacle3Indices(state, action);
 		default:
 			return state;
 	}

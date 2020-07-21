@@ -24,6 +24,19 @@ export const defaultTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
+		vertex.style.cursor = 'url(/treeCursor.png), pointer';
+	},
+	obstacle1: (vertex: HTMLDivElement) => {
+		vertex.style.backgroundColor = Colors.COLOR_WATER;
+		vertex.style.backgroundImage = '';
+	},
+	obstacle2: (vertex: HTMLDivElement) => {
+		vertex.style.backgroundColor = Colors.COLOR_TRAFFIC;
+		vertex.style.backgroundImage = '';
+	},
+	obstacle3: (vertex: HTMLDivElement) => {
+		vertex.style.backgroundColor = Colors.COLOR_MUD;
+		vertex.style.backgroundImage = '';
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -75,7 +88,7 @@ export const defaultTheme: GraphTheme = {
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
 	},
-	revertWall: (vertex: HTMLDivElement) => {
+	revertObstacle: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 	},

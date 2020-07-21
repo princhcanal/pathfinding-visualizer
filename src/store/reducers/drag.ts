@@ -6,17 +6,21 @@ export interface DragState {
 	isEndMouseDown: boolean;
 	isMouseDown: boolean;
 	wallIndices: number[];
+	obstacle1Indices: number[];
+	obstacle2Indices: number[];
+	obstacle3Indices: number[];
+	obstacleRef: number[] | null;
 	isDoneAnimating: boolean;
 	isRecalculating: boolean;
 	isOverStart: boolean;
 	isOverEnd: boolean;
-	isOverWall: boolean;
+	isOverObstacle: boolean;
 	overStartRow: number;
 	overStartCol: number;
 	overEndRow: number;
 	overEndCol: number;
-	overWallRow: number;
-	overWallCol: number;
+	overObstacleRow: number;
+	overObstacleCol: number;
 }
 
 const initialState: DragState = {
@@ -24,17 +28,21 @@ const initialState: DragState = {
 	isEndMouseDown: false,
 	isMouseDown: false,
 	wallIndices: [],
+	obstacle1Indices: [],
+	obstacle2Indices: [],
+	obstacle3Indices: [],
+	obstacleRef: null,
 	isDoneAnimating: false,
 	isRecalculating: false,
 	isOverStart: false,
 	isOverEnd: false,
-	isOverWall: false,
+	isOverObstacle: false,
 	overStartRow: 0,
 	overStartCol: 0,
 	overEndRow: 0,
 	overEndCol: 0,
-	overWallRow: 0,
-	overWallCol: 0,
+	overObstacleRow: 0,
+	overObstacleCol: 0,
 };
 
 const mouseDown = (state: DragState, action: any): DragState => {
@@ -57,12 +65,27 @@ const mouseDown = (state: DragState, action: any): DragState => {
 		};
 	}
 
-	if (state.wallIndices.includes(vertexIndex)) {
-		state.wallIndices = state.wallIndices.filter((i) => i !== vertexIndex);
-		action.theme.revertWall(vertex);
+	if (state.obstacleRef?.includes(vertexIndex)) {
+		state.obstacleRef.splice(state.obstacleRef.indexOf(vertexIndex), 1);
+		action.theme.revertObstacle(vertex);
 	} else {
-		state.wallIndices.push(vertexIndex);
-		action.theme.wall(vertex);
+		if (
+			!state.wallIndices.includes(vertexIndex) &&
+			!state.obstacle1Indices.includes(vertexIndex) &&
+			!state.obstacle2Indices.includes(vertexIndex) &&
+			!state.obstacle3Indices.includes(vertexIndex)
+		) {
+			state.obstacleRef?.push(vertexIndex);
+			if (state.obstacleRef === state.wallIndices) {
+				action.theme.wall(vertex);
+			} else if (state.obstacleRef === state.obstacle1Indices) {
+				action.theme.obstacle1(vertex);
+			} else if (state.obstacleRef === state.obstacle2Indices) {
+				action.theme.obstacle2(vertex);
+			} else if (state.obstacleRef === state.obstacle3Indices) {
+				action.theme.obstacle3(vertex);
+			}
+		}
 	}
 
 	return { ...state, isMouseDown: true };
@@ -74,18 +97,23 @@ const mouseOver = (state: DragState, action: any): DragState => {
 	let vertexIndex = parseInt(vertex.getAttribute('absoluteIndex'));
 	let isOverStart = false;
 	let isOverEnd = false;
-	let isOverWall = false;
+	let isOverObstacle = false;
 
 	if (state.isStartMouseDown) {
 		if (vertexIndex === action.endVertex.absoluteIndex) {
 			isOverEnd = true;
-		} else if (state.wallIndices.includes(vertexIndex)) {
-			isOverWall = true;
+		} else if (
+			state.wallIndices.includes(vertexIndex) ||
+			state.obstacle1Indices.includes(vertexIndex) ||
+			state.obstacle2Indices.includes(vertexIndex) ||
+			state.obstacle3Indices.includes(vertexIndex)
+		) {
+			isOverObstacle = true;
 		} else {
 			if (!action.endNeighbors.includes(vertexIndex)) {
 				for (let endNeighborVertex of action.endNeighborsVertices) {
 					if (
-						!state.wallIndices.includes(
+						!state.obstacleRef?.includes(
 							endNeighborVertex.absoluteIndex
 						)
 					) {
@@ -94,33 +122,47 @@ const mouseOver = (state: DragState, action: any): DragState => {
 				}
 			}
 
-			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+			for (let obstacleNeighborVertex of action.obstacleNeighborsVertices) {
 				if (
 					!state.wallIndices.includes(
-						wallNeighborVertex.absoluteIndex
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle1Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle2Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle3Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.endVertex.absoluteIndex
 					)
 				) {
-					action.theme.unvisited(wallNeighborVertex.element);
+					action.theme.unvisited(obstacleNeighborVertex.element);
 				}
 			}
 
 			action.theme.start(vertex);
-			vertex.style.cursor = 'grabbing';
 		}
+		vertex.style.cursor = 'grabbing';
 	} else if (state.isEndMouseDown) {
 		if (vertexIndex === action.startVertex.absoluteIndex) {
 			isOverStart = true;
-		} else if (state.wallIndices.includes(vertexIndex)) {
-			isOverWall = true;
+		} else if (
+			state.wallIndices.includes(vertexIndex) ||
+			state.obstacle1Indices.includes(vertexIndex) ||
+			state.obstacle2Indices.includes(vertexIndex) ||
+			state.obstacle3Indices.includes(vertexIndex)
+		) {
+			isOverObstacle = true;
 		} else {
 			if (!action.startNeighbors.includes(vertexIndex)) {
 				for (let startNeighborVertex of action.startNeighborsVertices) {
 					if (
-						!state.wallIndices.includes(
+						!state.obstacleRef?.includes(
 							startNeighborVertex.absoluteIndex
 						)
 					) {
@@ -129,36 +171,58 @@ const mouseOver = (state: DragState, action: any): DragState => {
 				}
 			}
 
-			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+			for (let obstacleNeighborVertex of action.obstacleNeighborsVertices) {
 				if (
 					!state.wallIndices.includes(
-						wallNeighborVertex.absoluteIndex
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle1Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle2Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle3Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.startVertex.absoluteIndex
 					)
 				) {
-					action.theme.unvisited(wallNeighborVertex.element);
+					action.theme.unvisited(obstacleNeighborVertex.element);
 				}
 			}
 
 			action.theme.end(vertex);
-			vertex.style.cursor = 'grabbing';
 		}
+		vertex.style.cursor = 'grabbing';
 	} else if (
 		state.isMouseDown &&
 		vertexIndex !== action.startVertex.absoluteIndex &&
 		vertexIndex !== action.endVertex.absoluteIndex
 	) {
-		if (state.wallIndices.includes(vertexIndex)) {
-			state.wallIndices = state.wallIndices.filter(
-				(i) => i !== vertexIndex
-			);
-			action.theme.revertWall(vertex);
+		if (state.obstacleRef?.includes(vertexIndex)) {
+			state.obstacleRef.splice(state.obstacleRef.indexOf(vertexIndex), 1);
+			action.theme.revertObstacle(vertex);
 		} else {
-			state.wallIndices.push(vertexIndex);
-			action.theme.wall(vertex);
+			if (
+				!state.wallIndices.includes(vertexIndex) &&
+				!state.obstacle1Indices.includes(vertexIndex) &&
+				!state.obstacle2Indices.includes(vertexIndex) &&
+				!state.obstacle3Indices.includes(vertexIndex)
+			) {
+				state.obstacleRef?.push(vertexIndex);
+				if (state.obstacleRef === state.wallIndices) {
+					action.theme.wall(vertex);
+				} else if (state.obstacleRef === state.obstacle1Indices) {
+					action.theme.obstacle1(vertex);
+				} else if (state.obstacleRef === state.obstacle2Indices) {
+					action.theme.obstacle2(vertex);
+				} else if (state.obstacleRef === state.obstacle3Indices) {
+					action.theme.obstacle3(vertex);
+				}
+			}
 		}
 	}
 
@@ -166,7 +230,7 @@ const mouseOver = (state: DragState, action: any): DragState => {
 		...state,
 		isOverStart,
 		isOverEnd,
-		isOverWall,
+		isOverObstacle,
 	};
 };
 
@@ -179,12 +243,12 @@ const mouseOut = (state: DragState, action: any): DragState => {
 	let overStartCol = state.overStartCol;
 	let overEndRow = state.overEndRow;
 	let overEndCol = state.overEndCol;
-	let overWallRow = state.overWallRow;
-	let overWallCol = state.overWallCol;
+	let overObstacleRow = state.overObstacleRow;
+	let overObstacleCol = state.overObstacleCol;
 
-	let overWallIndex = Position.indexToAbsolute(
-		state.overWallRow,
-		state.overWallCol,
+	let overObstacleIndex = Position.indexToAbsolute(
+		state.overObstacleRow,
+		state.overObstacleCol,
 		action.numRows,
 		action.numCols
 	);
@@ -193,37 +257,57 @@ const mouseOut = (state: DragState, action: any): DragState => {
 		if (vertexIndex === action.endVertex.absoluteIndex) {
 			for (let endNeighborVertex of action.endNeighborsVertices) {
 				if (
-					!state.wallIndices.includes(endNeighborVertex.absoluteIndex)
+					!state.obstacleRef?.includes(
+						endNeighborVertex.absoluteIndex
+					)
 				) {
 					action.theme.unvisited(endNeighborVertex.element);
 				}
 			}
-		} else if (state.wallIndices.includes(vertexIndex)) {
-			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+			vertex.style.cursor = 'grab';
+		} else if (
+			state.wallIndices.includes(vertexIndex) ||
+			state.obstacle1Indices.includes(vertexIndex) ||
+			state.obstacle2Indices.includes(vertexIndex) ||
+			state.obstacle3Indices.includes(vertexIndex)
+		) {
+			for (let obstacleNeighborVertex of action.obstacleNeighborsVertices) {
 				if (
 					!state.wallIndices.includes(
-						wallNeighborVertex.absoluteIndex
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle1Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle2Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle3Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.startVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.endVertex.absoluteIndex
 					) &&
-					!(wallNeighborVertex.absoluteIndex === overWallIndex)
+					!(
+						obstacleNeighborVertex.absoluteIndex ===
+						overObstacleIndex
+					)
 				) {
-					action.theme.unvisited(wallNeighborVertex.element);
+					action.theme.unvisited(obstacleNeighborVertex.element);
 				}
 			}
 		} else if (action.endNeighbors.includes(vertexIndex)) {
 			overEndRow = vertexRow;
 			overEndCol = vertexCol;
 			action.theme.start(vertex);
-		} else if (action.wallNeighbors.includes(vertexIndex)) {
-			overWallRow = vertexRow;
-			overWallCol = vertexCol;
+		} else if (action.obstacleNeighbors.includes(vertexIndex)) {
+			overObstacleRow = vertexRow;
+			overObstacleCol = vertexCol;
 			action.theme.start(vertex);
 		} else {
 			action.theme.unvisited(vertex);
@@ -232,39 +316,56 @@ const mouseOut = (state: DragState, action: any): DragState => {
 		if (vertexIndex === action.startVertex.absoluteIndex) {
 			for (let startNeighborVertex of action.startNeighborsVertices) {
 				if (
-					!state.wallIndices.includes(
+					!state.obstacleRef?.includes(
 						startNeighborVertex.absoluteIndex
 					)
 				) {
 					action.theme.unvisited(startNeighborVertex.element);
 				}
 			}
-		} else if (state.wallIndices.includes(vertexIndex)) {
-			for (let wallNeighborVertex of action.wallNeighborsVertices) {
+		} else if (
+			state.wallIndices.includes(vertexIndex) ||
+			state.obstacle1Indices.includes(vertexIndex) ||
+			state.obstacle2Indices.includes(vertexIndex) ||
+			state.obstacle3Indices.includes(vertexIndex)
+		) {
+			for (let obstacleNeighborVertex of action.obstacleNeighborsVertices) {
 				if (
 					!state.wallIndices.includes(
-						wallNeighborVertex.absoluteIndex
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle1Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle2Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
+					) &&
+					!state.obstacle3Indices.includes(
+						obstacleNeighborVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.startVertex.absoluteIndex
 					) &&
 					!(
-						wallNeighborVertex.absoluteIndex ===
+						obstacleNeighborVertex.absoluteIndex ===
 						action.endVertex.absoluteIndex
 					) &&
-					!(wallNeighborVertex.absoluteIndex === overWallIndex)
+					!(
+						obstacleNeighborVertex.absoluteIndex ===
+						overObstacleIndex
+					)
 				) {
-					action.theme.unvisited(wallNeighborVertex.element);
+					action.theme.unvisited(obstacleNeighborVertex.element);
 				}
 			}
 		} else if (action.startNeighbors.includes(vertexIndex)) {
 			overStartRow = vertexRow;
 			overStartCol = vertexCol;
 			action.theme.end(vertex);
-		} else if (action.wallNeighbors.includes(vertexIndex)) {
-			overWallRow = vertexRow;
-			overWallCol = vertexCol;
+		} else if (action.obstacleNeighbors.includes(vertexIndex)) {
+			overObstacleRow = vertexRow;
+			overObstacleCol = vertexCol;
 			action.theme.end(vertex);
 		} else {
 			action.theme.unvisited(vertex);
@@ -277,8 +378,8 @@ const mouseOut = (state: DragState, action: any): DragState => {
 		overStartCol,
 		overEndRow,
 		overEndCol,
-		overWallRow,
-		overWallCol,
+		overObstacleRow,
+		overObstacleCol,
 	};
 };
 
@@ -297,7 +398,7 @@ const mouseUp = (state: DragState, action: any): DragState => {
 		isRecalculating: false,
 		isOverStart: false,
 		isOverEnd: false,
-		isOverWall: false,
+		isOverObstacle: false,
 	};
 };
 
@@ -305,6 +406,9 @@ const clearDragWalls = (state: DragState, action: any): DragState => {
 	return {
 		...state,
 		wallIndices: [],
+		obstacle1Indices: [],
+		obstacle2Indices: [],
+		obstacle3Indices: [],
 	};
 };
 
@@ -319,6 +423,13 @@ const setIsRecalculating = (state: DragState, action: any): DragState => {
 	return {
 		...state,
 		isRecalculating: action.isRecalculating,
+	};
+};
+
+const setObstacleRef = (state: DragState, action: any): DragState => {
+	return {
+		...state,
+		obstacleRef: action.obstacleRef,
 	};
 };
 
@@ -341,6 +452,8 @@ export const dragReducer = (
 			return setIsDoneAnimating(state, action);
 		case ActionTypes.SET_IS_RECALCULATING:
 			return setIsRecalculating(state, action);
+		case ActionTypes.SET_OBSTACLE_REF:
+			return setObstacleRef(state, action);
 		default:
 			return state;
 	}

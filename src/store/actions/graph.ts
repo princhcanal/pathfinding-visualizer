@@ -99,6 +99,99 @@ export const onSetWallIndices = (
 	};
 };
 
+export const setObstacle1Indices = (
+	obstacle1Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return {
+		type: ActionTypes.SET_OBSTACLE_1_INDICES,
+		obstacle1Indices,
+		verticesRef,
+	};
+};
+
+export const onSetObstacle1Indices = (
+	obstacle1Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return (dispatch: any, getState: any) => {
+		dispatch(setObstacle1Indices(obstacle1Indices, verticesRef));
+		dispatch(initGraph(verticesRef, true));
+		dispatch(
+			onRecalculatePath(
+				getState().graph.start,
+				getState().graph.end,
+				verticesRef,
+				0,
+				0,
+				0
+			)
+		);
+	};
+};
+
+export const setObstacle2Indices = (
+	obstacle2Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return {
+		type: ActionTypes.SET_OBSTACLE_2_INDICES,
+		obstacle2Indices,
+		verticesRef,
+	};
+};
+
+export const onSetObstacle2Indices = (
+	obstacle2Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return (dispatch: any, getState: any) => {
+		dispatch(setObstacle2Indices(obstacle2Indices, verticesRef));
+		dispatch(initGraph(verticesRef, true));
+		dispatch(
+			onRecalculatePath(
+				getState().graph.start,
+				getState().graph.end,
+				verticesRef,
+				0,
+				0,
+				0
+			)
+		);
+	};
+};
+
+export const setObstacle3Indices = (
+	obstacle3Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return {
+		type: ActionTypes.SET_OBSTACLE_3_INDICES,
+		obstacle3Indices,
+		verticesRef,
+	};
+};
+
+export const onSetObstacle3Indices = (
+	obstacle3Indices: number[],
+	verticesRef: RefObject<HTMLDivElement>
+) => {
+	return (dispatch: any, getState: any) => {
+		dispatch(setObstacle3Indices(obstacle3Indices, verticesRef));
+		dispatch(initGraph(verticesRef, true));
+		dispatch(
+			onRecalculatePath(
+				getState().graph.start,
+				getState().graph.end,
+				verticesRef,
+				0,
+				0,
+				0
+			)
+		);
+	};
+};
+
 export const clearWalls = (verticesRef: RefObject<HTMLDivElement>) => {
 	return {
 		type: ActionTypes.CLEAR_WALLS,
@@ -140,7 +233,7 @@ export const onRecalculatePath = (
 	verticesRef: RefObject<HTMLDivElement>,
 	overEndIndex: number,
 	overStartIndex: number,
-	overWallIndex: number
+	overObstacleIndex: number
 ) => {
 	return (dispatch: any, getState: any) => {
 		let drag = getState().drag;
@@ -157,15 +250,19 @@ export const onRecalculatePath = (
 			if (drag.isOverEnd) {
 				startIndex = overEndIndex;
 			} else if (
-				drag.isOverWall &&
+				drag.isOverObstacle &&
 				!drag.isOverStart &&
 				isStartMouseDown
 			) {
-				startIndex = overWallIndex;
+				startIndex = overObstacleIndex;
 			} else if (drag.isOverStart) {
 				endIndex = overStartIndex;
-			} else if (drag.isOverWall && !drag.isOverEnd && isEndMouseDown) {
-				endIndex = overWallIndex;
+			} else if (
+				drag.isOverObstacle &&
+				!drag.isOverEnd &&
+				isEndMouseDown
+			) {
+				endIndex = overObstacleIndex;
 			}
 
 			dispatch(recalculatePath(startIndex, endIndex, verticesRef));

@@ -46,8 +46,8 @@ export const mouseOver = (
 	startNeighborsVertices: Vertex[],
 	endNeighbors: number[],
 	endNeighborsVertices: Vertex[],
-	wallNeighbors: number[],
-	wallNeighborsVertices: Vertex[],
+	obstacleNeighbors: number[],
+	obstacleNeighborsVertices: Vertex[],
 	theme: GraphTheme
 ) => {
 	return {
@@ -62,8 +62,8 @@ export const mouseOver = (
 		startNeighborsVertices,
 		endNeighbors,
 		endNeighborsVertices,
-		wallNeighbors,
-		wallNeighborsVertices,
+		obstacleNeighbors,
+		obstacleNeighborsVertices,
 		theme,
 	};
 };
@@ -79,6 +79,15 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		let numCols = graph.numCols;
 		let theme = graph.theme;
 		let wallIndices = drag.wallIndices;
+		let obstacle1Indices = drag.obstacle1Indices;
+		let obstacle2Indices = drag.obstacle2Indices;
+		let obstacle3Indices = drag.obstacle3Indices;
+		let obstacleIndices = [
+			...wallIndices,
+			...obstacle1Indices,
+			...obstacle2Indices,
+			obstacle3Indices,
+		];
 		let startNeighbors = getNeighbors(
 			startVertex.absoluteIndex,
 			startVertex.row,
@@ -91,12 +100,15 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numRows,
 			numCols
 		);
-		let wallNeighbors: number[] = [];
-		for (let wallIndex of wallIndices) {
-			let wallRow = Position.absoluteToIndex(wallIndex, numRows, numCols)
-				.row;
-			wallNeighbors.push(
-				...getNeighbors(wallIndex, wallRow, numRows, numCols)
+		let obstacleNeighbors: number[] = [];
+		for (let obstacleIndex of obstacleIndices) {
+			let obstacleRow = Position.absoluteToIndex(
+				obstacleIndex,
+				numRows,
+				numCols
+			).row;
+			obstacleNeighbors.push(
+				...getNeighbors(obstacleIndex, obstacleRow, numRows, numCols)
 			);
 		}
 		let startNeighborsVertices: Vertex[] = getNeighborVertices(
@@ -111,8 +123,8 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numCols,
 			verticesRef
 		);
-		let wallNeighborsVertices: Vertex[] = getNeighborVertices(
-			wallNeighbors,
+		let obstacleNeighborsVertices: Vertex[] = getNeighborVertices(
+			obstacleNeighbors,
 			numRows,
 			numCols,
 			verticesRef
@@ -130,8 +142,8 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 				startNeighborsVertices,
 				endNeighbors,
 				endNeighborsVertices,
-				wallNeighbors,
-				wallNeighborsVertices,
+				obstacleNeighbors,
+				obstacleNeighborsVertices,
 				theme
 			)
 		);
@@ -141,8 +153,8 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		let overEndCol = drag.overEndCol;
 		let overStartRow = drag.overStartRow;
 		let overStartCol = drag.overStartCol;
-		let overWallRow = drag.overWallRow;
-		let overWallCol = drag.overWallCol;
+		let overObstacleRow = drag.overObstacleRow;
+		let overObstacleCol = drag.overObstacleCol;
 
 		let overEndIndex = indexToAbsolute(
 			overEndRow,
@@ -156,14 +168,15 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numRows,
 			numCols
 		);
-		let overWallIndex = indexToAbsolute(
-			overWallRow,
-			overWallCol,
+		let overObstacleIndex = indexToAbsolute(
+			overObstacleRow,
+			overObstacleCol,
 			numRows,
 			numCols
 		);
 
 		if (drag.isStartMouseDown && drag.isDoneAnimating) {
+			console.log(overObstacleIndex);
 			dispatch(
 				actions.onRecalculatePath(
 					vertexIndex,
@@ -171,7 +184,7 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 					verticesRef,
 					overEndIndex,
 					overStartIndex,
-					overWallIndex
+					overObstacleIndex
 				)
 			);
 		} else if (drag.isEndMouseDown && drag.isDoneAnimating) {
@@ -182,7 +195,7 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 					verticesRef,
 					overEndIndex,
 					overStartIndex,
-					overWallIndex
+					overObstacleIndex
 				)
 			);
 		}
@@ -200,8 +213,8 @@ export const mouseOut = (
 	startNeighborsVertices: Vertex[],
 	endNeighbors: number[],
 	endNeighborsVertices: Vertex[],
-	wallNeighbors: number[],
-	wallNeighborsVertices: Vertex[],
+	obstacleNeighbors: number[],
+	obstacleNeighborsVertices: Vertex[],
 	theme: GraphTheme
 ) => {
 	return {
@@ -216,8 +229,8 @@ export const mouseOut = (
 		startNeighborsVertices,
 		endNeighbors,
 		endNeighborsVertices,
-		wallNeighbors,
-		wallNeighborsVertices,
+		obstacleNeighbors,
+		obstacleNeighborsVertices,
 		theme,
 	};
 };
@@ -233,6 +246,15 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		let verticesRef = graph.verticesRef;
 		let theme = graph.theme;
 		let wallIndices = drag.wallIndices;
+		let obstacle1Indices = drag.obstacle1Indices;
+		let obstacle2Indices = drag.obstacle2Indices;
+		let obstacle3Indices = drag.obstacle3Indices;
+		let obstacleIndices = [
+			...wallIndices,
+			...obstacle1Indices,
+			...obstacle2Indices,
+			...obstacle3Indices,
+		];
 		let startNeighbors = getNeighbors(
 			startVertex.absoluteIndex,
 			startVertex.row,
@@ -245,12 +267,15 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numRows,
 			numCols
 		);
-		let wallNeighbors: number[] = [];
-		for (let wallIndex of wallIndices) {
-			let wallRow = Position.absoluteToIndex(wallIndex, numRows, numCols)
-				.row;
-			wallNeighbors.push(
-				...getNeighbors(wallIndex, wallRow, numRows, numCols)
+		let obstacleNeighbors: number[] = [];
+		for (let obstacleIndex of obstacleIndices) {
+			let obstacleRow = Position.absoluteToIndex(
+				obstacleIndex,
+				numRows,
+				numCols
+			).row;
+			obstacleNeighbors.push(
+				...getNeighbors(obstacleIndex, obstacleRow, numRows, numCols)
 			);
 		}
 		let startNeighborsVertices: Vertex[] = getNeighborVertices(
@@ -265,8 +290,8 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			numCols,
 			verticesRef
 		);
-		let wallNeighborsVertices: Vertex[] = getNeighborVertices(
-			wallNeighbors,
+		let obstacleNeighborsVertices: Vertex[] = getNeighborVertices(
+			obstacleNeighbors,
 			numRows,
 			numCols,
 			verticesRef
@@ -284,8 +309,8 @@ export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 				startNeighborsVertices,
 				endNeighbors,
 				endNeighborsVertices,
-				wallNeighbors,
-				wallNeighborsVertices,
+				obstacleNeighbors,
+				obstacleNeighborsVertices,
 				theme
 			)
 		);
@@ -349,11 +374,11 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 						verticesRef
 					)
 				);
-			} else if (drag.isOverWall) {
+			} else if (drag.isOverObstacle) {
 				dispatch(
 					actions.setStartVertex(
-						drag.overWallRow,
-						drag.overWallCol,
+						drag.overObstacleRow,
+						drag.overObstacleCol,
 						verticesRef
 					)
 				);
@@ -371,11 +396,11 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 						verticesRef
 					)
 				);
-			} else if (drag.isOverWall) {
+			} else if (drag.isOverObstacle) {
 				dispatch(
 					actions.setEndVertex(
-						drag.overWallRow,
-						drag.overWallCol,
+						drag.overObstacleRow,
+						drag.overObstacleCol,
 						verticesRef
 					)
 				);
@@ -386,6 +411,24 @@ export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 			}
 		} else if (drag.isMouseDown) {
 			dispatch(actions.onSetWallIndices(drag.wallIndices, verticesRef));
+			dispatch(
+				actions.onSetObstacle1Indices(
+					drag.obstacle1Indices,
+					verticesRef
+				)
+			);
+			dispatch(
+				actions.onSetObstacle2Indices(
+					drag.obstacle2Indices,
+					verticesRef
+				)
+			);
+			dispatch(
+				actions.onSetObstacle3Indices(
+					drag.obstacle3Indices,
+					verticesRef
+				)
+			);
 		}
 
 		dispatch(mouseUp(e));
@@ -409,5 +452,33 @@ export const setIsRecalculating = (isRecalculating: boolean) => {
 	return {
 		type: ActionTypes.SET_IS_RECALCULATING,
 		isRecalculating,
+	};
+};
+
+export const setObstacleRef = (obstacleRef: number[]) => {
+	return {
+		type: ActionTypes.SET_OBSTACLE_REF,
+		obstacleRef,
+	};
+};
+
+export const onSetObstacleRef = (obstacleRef: string) => {
+	return (dispatch: any, getState: any) => {
+		const drag = getState().drag;
+		const wallIndices = drag.wallIndices;
+		const obstacle1Indices = drag.obstacle1Indices;
+		const obstacle2Indices = drag.obstacle2Indices;
+		const obstacle3Indices = drag.obstacle3Indices;
+
+		type Obstacles = { [key: string]: number[] };
+
+		const obstacles: Obstacles = {
+			wall: wallIndices,
+			obstacle1: obstacle1Indices,
+			obstacle2: obstacle2Indices,
+			obstacle3: obstacle3Indices,
+		};
+
+		dispatch(setObstacleRef(obstacles[obstacleRef]));
 	};
 };

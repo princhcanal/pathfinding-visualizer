@@ -7,8 +7,10 @@ type Option = { [key: string]: string };
 interface DropdownProps {
 	name: string;
 	options: Option;
+	default: string;
 	classNames?: string[];
 	label?: string;
+	width: string;
 	onChange: (event: MouseEvent<HTMLLIElement>) => void;
 }
 
@@ -59,8 +61,10 @@ const Dropdown = (props: DropdownProps) => {
 	const handleOptionClicked = (e: MouseEvent<HTMLLIElement>) => {
 		if (headingRef.current) {
 			props.onChange(e);
-			headingRef.current.children[0].innerHTML =
-				e.currentTarget.innerHTML;
+			headingRef.current.children[0].innerHTML = e.currentTarget.innerHTML.substring(
+				0,
+				e.currentTarget.innerHTML.indexOf(' ')
+			);
 			headingRef.current.click();
 		}
 	};
@@ -83,16 +87,20 @@ const Dropdown = (props: DropdownProps) => {
 	return (
 		<div className={styles.Dropdown}>
 			<p className={styles.Label}>{props.label && props.label}</p>
-			<ul className={styles.List}>
+			<ul className={styles.List} /*style={{ width: props.width }}*/>
 				<h1
 					ref={headingRef}
 					className={styles.Heading}
 					onClick={handleDropdownToggle}
 				>
-					<span>Dijkstra</span>
+					<span>{props.default}</span>
 					<span className={styles.Caret}>&#8227;</span>
 				</h1>
-				<div ref={optionsRef} className={optionsStyles.join(' ')}>
+				<div
+					ref={optionsRef}
+					className={optionsStyles.join(' ')}
+					// style={{ height: `${options.length * 2}rem` }}
+				>
 					{options}
 				</div>
 			</ul>

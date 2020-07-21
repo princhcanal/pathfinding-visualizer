@@ -30,6 +30,10 @@
 	color: var(--color-3);
 }
 
+.Button:active {
+	color: red;
+}
+
 @media (hover: none) {
 	.Button:hover {
 		background-color: transparent;
@@ -40,6 +44,8 @@
 .Dropdowns {
 	display: flex;
 	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap;
 	padding: 1rem 0;
 	/* border: 1px solid var(--color-1); */
 }
@@ -52,7 +58,7 @@
 	transition: all 0.2s;
 	border-radius: 0.3rem;
 	padding: 0.5rem 1rem;
-	margin-left: 1rem;
+	/* margin-left: 1rem; */
 }
 
 .Dropdown:active {

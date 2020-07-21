@@ -33,6 +33,7 @@ const Vertex = (props: VertexRef) => {
 			}}
 		>
 			<p>&bull;</p>
+			{/* <em>{props.absoluteIndex}</em> */}
 		</div>
 	);
 };
