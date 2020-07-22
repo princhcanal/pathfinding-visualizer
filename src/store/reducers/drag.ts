@@ -9,6 +9,7 @@ export interface DragState {
 	obstacle1Indices: number[];
 	obstacle2Indices: number[];
 	obstacle3Indices: number[];
+	obstacleIndices: number[];
 	obstacleRef: number[] | null;
 	isDoneAnimating: boolean;
 	isRecalculating: boolean;
@@ -31,6 +32,7 @@ const initialState: DragState = {
 	obstacle1Indices: [],
 	obstacle2Indices: [],
 	obstacle3Indices: [],
+	obstacleIndices: [],
 	obstacleRef: null,
 	isDoneAnimating: false,
 	isRecalculating: false,
@@ -88,7 +90,16 @@ const mouseDown = (state: DragState, action: any): DragState => {
 		}
 	}
 
-	return { ...state, isMouseDown: true };
+	return {
+		...state,
+		isMouseDown: true,
+		obstacleIndices: [
+			...state.wallIndices,
+			...state.obstacle1Indices,
+			...state.obstacle2Indices,
+			...state.obstacle3Indices,
+		],
+	};
 };
 
 // FIXME: vertex over walls over start/end
@@ -231,6 +242,12 @@ const mouseOver = (state: DragState, action: any): DragState => {
 		isOverStart,
 		isOverEnd,
 		isOverObstacle,
+		obstacleIndices: [
+			...state.wallIndices,
+			...state.obstacle1Indices,
+			...state.obstacle2Indices,
+			...state.obstacle3Indices,
+		],
 	};
 };
 
@@ -380,6 +397,12 @@ const mouseOut = (state: DragState, action: any): DragState => {
 		overEndCol,
 		overObstacleRow,
 		overObstacleCol,
+		obstacleIndices: [
+			...state.wallIndices,
+			...state.obstacle1Indices,
+			...state.obstacle2Indices,
+			...state.obstacle3Indices,
+		],
 	};
 };
 
@@ -409,6 +432,7 @@ const clearDragWalls = (state: DragState, action: any): DragState => {
 		obstacle1Indices: [],
 		obstacle2Indices: [],
 		obstacle3Indices: [],
+		obstacleIndices: [],
 	};
 };
 

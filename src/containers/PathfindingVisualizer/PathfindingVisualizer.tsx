@@ -4,16 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import Vertices from './Vertices/Vertices';
 import Navbar from '../../components/UI/Navbar/Navbar';
 import Controller from '../../components/Controller/Controller';
+import MobileController from '../../components/MobileController/MobileController';
 
 import * as Actions from '../../store/actions';
 
 import styles from './PathfindingVisualizer.module.css';
 import { StoreState } from '../../store/reducers';
-// import { MobileController } from '../../components/MobileController/MobileController';
 
 interface PathfindingVisualizerProps {}
 
-// TODO: implement controls section
 // TODO: implement mobile controls
 // TODO: implement themes (Road, Avengers, Star Wars, Pokemon, The Office, Friends, One Piece)
 // TODO: remove verticesRef on graph actions
@@ -81,6 +80,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	useEffect(() => {
 		dispatch(Actions.initGraph(verticesRef));
 		dispatch(Actions.clearPath(verticesRef));
+		dispatch(Actions.setIsDoneAnimating(false));
 		dispatch(Actions.onClearWalls(verticesRef));
 	}, [dispatch, numRows, numCols]);
 
@@ -96,7 +96,7 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 			<Navbar verticesRef={verticesRef} />
 			<Controller verticesRef={verticesRef} />
 			<Vertices ref={verticesRef} />
-			{/* <MobileController verticesRef={verticesRef} /> */}
+			<MobileController verticesRef={verticesRef} />
 			{/* <div className={styles.buttons}>
 				<button onClick={handleTest}>Test</button>
 			</div> */}

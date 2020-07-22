@@ -1,3 +1,3 @@
 export const themeOptions = {
-	default: 'Default',
+	city: 'City',
 };

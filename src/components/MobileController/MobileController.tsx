@@ -17,7 +17,9 @@ interface MobileControllerProps {
 	verticesRef: RefObject<HTMLDivElement>;
 }
 
-export const MobileController = (props: MobileControllerProps) => {
+// FIXME: moves over walls
+// FIXME: responsive issues
+const MobileController = (props: MobileControllerProps) => {
 	let classNames = [styles.MobileController];
 	if (props.classNames) {
 		classNames.push(...props.classNames);
@@ -38,6 +40,13 @@ export const MobileController = (props: MobileControllerProps) => {
 	const theme = useSelector<StoreState, GraphTheme>(
 		(state) => state.graph.theme
 	);
+	const isDoneAnimating = useSelector<StoreState, boolean>(
+		(state) => state.drag.isDoneAnimating
+	);
+	const obstacleIndices = useSelector<StoreState, number[]>(
+		(state) => state.drag.obstacleIndices
+	);
+	const controllerRef = useRef<HTMLDivElement>(null);
 	const startEndRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatch();
 	let start: Element;
@@ -63,19 +72,108 @@ export const MobileController = (props: MobileControllerProps) => {
 			numRows,
 			numCols
 		);
-		console.log(startNeighbors.top);
 		endNeighbors = getNeighbors(
 			endVertex?.absoluteIndex as number,
 			endVertex?.row as number,
 			numRows,
 			numCols
 		);
-		startNeighborsTopVertex = getVertexAbsolute(
-			startNeighbors.top,
-			numRows,
-			numCols,
-			props.verticesRef
-		);
+		if (
+			startNeighbors.top !== -1 &&
+			startNeighbors.top < numRows * numCols &&
+			!obstacleIndices.includes(startNeighbors.top)
+		) {
+			startNeighborsTopVertex = getVertexAbsolute(
+				startNeighbors.top,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			endNeighbors.top !== -1 &&
+			endNeighbors.top < numRows * numCols &&
+			!obstacleIndices.includes(endNeighbors.top)
+		) {
+			endNeighborsTopVertex = getVertexAbsolute(
+				endNeighbors.top,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			startNeighbors.bottom !== -1 &&
+			startNeighbors.bottom < numRows * numCols &&
+			!obstacleIndices.includes(startNeighbors.bottom)
+		) {
+			startNeighborsBottomVertex = getVertexAbsolute(
+				startNeighbors.bottom,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			endNeighbors.bottom !== -1 &&
+			endNeighbors.bottom < numRows * numCols &&
+			!obstacleIndices.includes(endNeighbors.bottom)
+		) {
+			endNeighborsBottomVertex = getVertexAbsolute(
+				endNeighbors.bottom,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			startNeighbors.left !== -1 &&
+			startNeighbors.left < numRows * numCols &&
+			!obstacleIndices.includes(startNeighbors.left)
+		) {
+			startNeighborsLeftVertex = getVertexAbsolute(
+				startNeighbors.left,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			endNeighbors.left !== -1 &&
+			endNeighbors.left < numRows * numCols &&
+			!obstacleIndices.includes(endNeighbors.left)
+		) {
+			endNeighborsLeftVertex = getVertexAbsolute(
+				endNeighbors.left,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			startNeighbors.right !== -1 &&
+			startNeighbors.right < numRows * numCols &&
+			!obstacleIndices.includes(startNeighbors.right)
+		) {
+			startNeighborsRightVertex = getVertexAbsolute(
+				startNeighbors.right,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
+		if (
+			endNeighbors.right !== -1 &&
+			endNeighbors.right < numRows * numCols &&
+			!obstacleIndices.includes(endNeighbors.right)
+		) {
+			endNeighborsRightVertex = getVertexAbsolute(
+				endNeighbors.right,
+				numRows,
+				numCols,
+				props.verticesRef
+			);
+		}
 	}
 
 	const handleStart = () => {
@@ -100,42 +198,111 @@ export const MobileController = (props: MobileControllerProps) => {
 		}
 	};
 
-	const handleUp = () => {
-		if (startEndRef.current && startVertex) {
-			if (start.classList.contains(styles.Selected)) {
-				const top = startNeighborsTopVertex;
-				console.log(startNeighbors.top);
-				if (startNeighbors.top !== -1) {
-					theme.start(top.element);
+	const handleMove = (
+		element: Element,
+		elementNeighbor: number,
+		vertex: Vertex
+	) => {
+		if (startEndRef.current && startVertex && endVertex) {
+			if (
+				elementNeighbor !== -1 &&
+				elementNeighbor !== endVertex.absoluteIndex &&
+				elementNeighbor !== startVertex.absoluteIndex &&
+				!obstacleIndices.includes(elementNeighbor)
+			) {
+				if (element === start) {
+					theme.start(vertex.element);
 					theme.unvisited(startVertex?.element);
 					dispatch(
 						Actions.setStartVertex(
-							top.row,
-							top.column,
+							vertex.row,
+							vertex.column,
 							props.verticesRef
 						)
 					);
+					if (isDoneAnimating) {
+						dispatch(Actions.clearPath(props.verticesRef));
+						dispatch(
+							Actions.recalculatePath(
+								vertex.absoluteIndex,
+								endVertex.absoluteIndex,
+								props.verticesRef
+							)
+						);
+					}
+				} else if (element === end) {
+					theme.end(vertex.element);
+					theme.unvisited(endVertex?.element);
+					dispatch(
+						Actions.setEndVertex(
+							vertex.row,
+							vertex.column,
+							props.verticesRef
+						)
+					);
+					if (isDoneAnimating) {
+						dispatch(Actions.clearPath(props.verticesRef));
+						dispatch(
+							Actions.recalculatePath(
+								startVertex.absoluteIndex,
+								vertex.absoluteIndex,
+								props.verticesRef
+							)
+						);
+					}
 				}
+			} else if (controllerRef.current) {
+				controllerRef.current.classList.remove(styles.Shake);
+				setTimeout(() => {
+					if (controllerRef.current) {
+						controllerRef.current.classList.add(styles.Shake);
+					}
+				}, 10);
 			}
 		}
 	};
-	const handleDown = () => {};
-	const handleLeft = () => {};
-	const handleRight = () => {};
+
+	const handleUp = () => {
+		if (start.classList.contains(styles.Selected)) {
+			handleMove(start, startNeighbors.top, startNeighborsTopVertex);
+		} else if (end.classList.contains(styles.Selected)) {
+			handleMove(end, endNeighbors.top, endNeighborsTopVertex);
+		}
+	};
+	const handleDown = () => {
+		if (start.classList.contains(styles.Selected)) {
+			handleMove(
+				start,
+				startNeighbors.bottom,
+				startNeighborsBottomVertex
+			);
+		} else if (end.classList.contains(styles.Selected)) {
+			handleMove(end, endNeighbors.bottom, endNeighborsBottomVertex);
+		}
+	};
+	const handleLeft = () => {
+		if (start.classList.contains(styles.Selected)) {
+			handleMove(start, startNeighbors.left, startNeighborsLeftVertex);
+		} else if (end.classList.contains(styles.Selected)) {
+			handleMove(end, endNeighbors.left, endNeighborsLeftVertex);
+		}
+	};
+	const handleRight = () => {
+		if (start.classList.contains(styles.Selected)) {
+			handleMove(start, startNeighbors.right, startNeighborsRightVertex);
+		} else if (end.classList.contains(styles.Selected)) {
+			handleMove(end, endNeighbors.right, endNeighborsRightVertex);
+		}
+	};
 
 	return (
-		<div className={classNames.join(' ')}>
+		<div ref={controllerRef} className={classNames.join(' ')}>
 			<div className={styles.StartEndContainer}>
 				<div ref={startEndRef} className={styles.StartEnd}>
 					<button className={styles.Selected} onClick={handleStart}>
 						Start
 					</button>
 					<button onClick={handleEnd}>End</button>
-				</div>
-			</div>
-			<div className={styles.ShowControlsContainer}>
-				<div className={styles.ShowControls}>
-					<button>Hide Controls</button>
 				</div>
 			</div>
 			<div className={styles.DPadContainer}>
@@ -155,3 +322,5 @@ export const MobileController = (props: MobileControllerProps) => {
 		</div>
 	);
 };
+
+export default MobileController;

@@ -1,4 +1,9 @@
-import React, { RefObject, MouseEvent } from 'react';
+import React, {
+	RefObject,
+	MouseEvent,
+	ForwardRefExoticComponent,
+	RefAttributes,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './Controller.module.css';
@@ -10,7 +15,7 @@ import { Vertex } from '../../store/reducers/graph';
 import { GraphTheme } from '../../utils/themes';
 import { PathfindingStates } from '../../utils/pathfinding/pathfindingStates';
 
-import Dropdown from '../UI/Dropdown/Dropdown';
+import Dropdown, { DropdownProps } from '../UI/Dropdown/Dropdown';
 import { pathfindingOptions } from '../../utils/pathfinding/pathfindingOptions';
 import { obstacleOptions } from '../../utils/obstacleOptions';
 import { themeOptions } from '../../utils/themeOptions';
@@ -19,6 +24,12 @@ interface ControllerProps {
 	classNames?: string[];
 	verticesRef: RefObject<HTMLDivElement>;
 }
+
+export type Handle<T> = T extends ForwardRefExoticComponent<
+	DropdownProps & RefAttributes<infer T2>
+>
+	? T2
+	: never;
 
 const Controller = (props: ControllerProps) => {
 	let classNames = [styles.Controller];
@@ -49,9 +60,7 @@ const Controller = (props: ControllerProps) => {
 	const theme = useSelector<StoreState, GraphTheme>(
 		(state) => state.graph.theme
 	);
-	const obstacleRef = useSelector<StoreState, number[] | null>(
-		(state) => state.drag.obstacleRef
-	);
+	let obstacleDropdown: Handle<typeof Dropdown>;
 
 	const handleAnimation = (start: number, end: number) => {
 		dispatch(Actions.clearPath(props.verticesRef));
@@ -136,6 +145,10 @@ const Controller = (props: ControllerProps) => {
 	};
 	const handleClearObstacles = () => {
 		dispatch(Actions.onClearWalls(props.verticesRef));
+		if (obstacleDropdown.heading) {
+			obstacleDropdown.heading.children[0].innerHTML =
+				obstacleOptions['wall'];
+		}
 	};
 	const handleReset = () => {
 		dispatch(Actions.setIsAnimating(false));
@@ -193,8 +206,13 @@ const Controller = (props: ControllerProps) => {
 					width='21rem'
 				></Dropdown>
 				<Dropdown
+					ref={(o) =>
+						(obstacleDropdown = o as {
+							heading: HTMLHeadingElement | null;
+						})
+					}
 					name='obstacles'
-					default='Tree'
+					default='Tree (Weight: Infinity)'
 					options={obstacleOptions}
 					onChange={handleObstacleChanged}
 					classNames={[styles.Dropdown]}
@@ -203,7 +221,7 @@ const Controller = (props: ControllerProps) => {
 				></Dropdown>
 				<Dropdown
 					name='themes'
-					default='Default'
+					default='City'
 					options={themeOptions}
 					onChange={handleThemeChanged}
 					classNames={[styles.Dropdown]}

@@ -1,32 +1,39 @@
 .MobileController {
-	/* display: none; */
-	display: flex;
+	display: none;
+	position: fixed;
+	bottom: 5%;
+	left: 50%;
+	transform: translateX(-50%);
 	justify-content: space-between;
 	align-items: center;
 	width: 90%;
-	margin: 0 auto 10rem;
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 0.3rem;
-	padding: 2rem 0;
+	padding: 2rem 1rem;
+	touch-action: manipulation;
 }
 
 .MobileController button {
 	border: none;
 	border-radius: 0.3rem;
-	padding: 0.5rem 0.7rem;
+	padding: 0.7rem 1rem;
 	background-color: var(--color-1);
 	color: var(--color-4);
+}
+
+.MobileController button:active {
+	color: red;
 }
 
 .MobileController button.Selected {
 	border: 2px solid var(--color-4);
 }
 
-/* @media (hover: none) {
+@media (hover: none) {
 	.MobileController {
-		display: block;
+		display: flex;
 	}
-} */
+}
 
 .StartEndContainer {
 	display: flex;
@@ -37,8 +44,14 @@
 
 .StartEnd {
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	flex-basis: 50%;
+}
+
+.StartEnd button {
+	margin: 1rem 0;
 }
 
 .DPadContainer {
@@ -75,9 +88,39 @@
 	padding-top: 0.5rem;
 }
 
+.Shake {
+	animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+	transform: translateX(-50%) translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	perspective: 1000px;
+}
+
+@keyframes shake {
+	10%,
+	90% {
+		transform: translateX(-50%) translate3d(-1px, 0, 0);
+	}
+
+	20%,
+	80% {
+		transform: translateX(-50%) translate3d(2px, 0, 0);
+	}
+
+	30%,
+	50%,
+	70% {
+		transform: translateX(-50%) translate3d(-4px, 0, 0);
+	}
+
+	40%,
+	60% {
+		transform: translateX(-50%) translate3d(4px, 0, 0);
+	}
+}
+
 @media only screen and (max-width: 1000px) {
 	.DPad {
-		flex-basis: 45%;
+		flex-basis: 60%;
 	}
 }
 
@@ -90,37 +133,33 @@
 		padding-top: 0.7rem;
 	}
 	.DPad {
-		flex-basis: 55%;
+		flex-basis: 75%;
 	}
 }
 
 @media only screen and (max-width: 700px) {
 	.DPad {
-		flex-basis: 65%;
+		flex-basis: 85%;
 	}
 }
 
 @media only screen and (max-width: 600px) {
 	.DPad {
-		flex-basis: 75%;
+		flex-basis: 95%;
 	}
 }
 
 @media only screen and (max-width: 500px) {
 	.DPad {
-		flex-basis: 85%;
+		flex-basis: 100%;
+	}
+	.DPadContainer {
+		flex-basis: 35%;
 	}
 }
 
 @media only screen and (max-width: 400px) {
-	.DPad {
-		flex-basis: 100%;
+	.DPadContainer {
+		flex-basis: 40%;
 	}
-}
-
-.ShowControlsContainer {
-	flex-grow: 1;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 }

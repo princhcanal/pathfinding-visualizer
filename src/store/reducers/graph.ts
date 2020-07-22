@@ -31,8 +31,10 @@ export interface Vertex {
 }
 
 // DEFAULTS
-const NUM_ROWS = 17;
-const NUM_COLS = 33;
+// const NUM_ROWS = 17;
+// const NUM_COLS = 33;
+const NUM_ROWS = 11;
+const NUM_COLS = 5;
 
 const initialState: GraphState = {
 	verticesRef: null,

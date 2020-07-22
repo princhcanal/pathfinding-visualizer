@@ -5,11 +5,6 @@
 	--color-2: #4ecdc4;
 	--color-3: #ffffff;
 	--color-4: #ff6b6b;
-
-	--color-default-wall: #292f36;
-	--color-default-visited: '#8d6b94';
-	--color-default-visiting: '#ff6b6b';
-	--color-default-path: '#4ecdc4';
 }
 
 *,
@@ -23,21 +18,27 @@ html {
 	font-size: 100%;
 }
 
-@media only screen and (max-width: 485px) {
+@media only screen and (max-width: 508px) {
 	html {
 		font-size: 80%;
 	}
 }
 
-@media only screen and (max-width: 391px) {
+@media only screen and (max-width: 406px) {
 	html {
 		font-size: 70%;
 	}
 }
 
-@media only screen and (max-width: 344px) {
+@media only screen and (max-width: 355px) {
 	html {
 		font-size: 60%;
+	}
+}
+
+@media only screen and (max-width: 304px) {
+	html {
+		font-size: 50%;
 	}
 }
 
