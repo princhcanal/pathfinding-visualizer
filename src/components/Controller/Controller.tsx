@@ -3,6 +3,7 @@ import React, {
 	MouseEvent,
 	ForwardRefExoticComponent,
 	RefAttributes,
+	useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,10 +16,10 @@ import { Vertex } from '../../store/reducers/graph';
 import { GraphTheme } from '../../utils/themes';
 import { PathfindingStates } from '../../utils/pathfinding/pathfindingStates';
 
-import Dropdown, { DropdownProps } from '../UI/Dropdown/Dropdown';
+import Dropdown, { DropdownProps, DropdownRef } from '../UI/Dropdown/Dropdown';
 import { pathfindingOptions } from '../../utils/pathfinding/pathfindingOptions';
-import { obstacleOptions } from '../../utils/obstacleOptions';
-import { themeOptions } from '../../utils/themeOptions';
+import { pathfindingAlgorithms } from '../../utils/pathfinding/pathfindingAlgorithms';
+import { themes, themeOptions, obstacleOptions } from '../../utils/themes/';
 
 interface ControllerProps {
 	classNames?: string[];
@@ -38,6 +39,7 @@ const Controller = (props: ControllerProps) => {
 	}
 	const dispatch = useDispatch();
 
+	const [obstacles, setObstacles] = useState(obstacleOptions['car']);
 	const graph = useSelector<StoreState, Graph>((state) => state.graph.graph);
 	const numRows = useSelector<StoreState, number>(
 		(state) => state.graph.numRows
@@ -146,15 +148,14 @@ const Controller = (props: ControllerProps) => {
 	const handleClearObstacles = () => {
 		dispatch(Actions.onClearWalls(props.verticesRef));
 		if (obstacleDropdown.heading) {
-			obstacleDropdown.heading.children[0].innerHTML =
-				obstacleOptions['wall'];
+			obstacleDropdown.heading.children[0].innerHTML = obstacles['wall'];
 		}
 	};
 	const handleReset = () => {
 		dispatch(Actions.setIsAnimating(false));
 		dispatch(Actions.setIsDoneAnimating(false));
 		dispatch(Actions.clearPath(props.verticesRef));
-		dispatch(Actions.onClearWalls(props.verticesRef));
+		handleClearObstacles();
 		dispatch(
 			Actions.setStartVertex(
 				Math.floor(numRows / 2),
@@ -176,25 +177,89 @@ const Controller = (props: ControllerProps) => {
 	const handleAlgorithmChanged = (e: MouseEvent<HTMLLIElement>) => {
 		dispatch(
 			Actions.setCurrentAlgorithm(
-				e.currentTarget.getAttribute('value') as string
+				pathfindingAlgorithms[
+					e.currentTarget.getAttribute('value') as string
+				]
 			)
 		);
 	};
 
 	const handleObstacleChanged = (e: MouseEvent<HTMLLIElement>) => {
-		dispatch(
-			Actions.onSetObstacleRef(
-				e.currentTarget.getAttribute('value') as string
-			)
-		);
+		const obstacle = e.currentTarget.getAttribute('value') as string;
+		dispatch(Actions.onSetObstacleRef(obstacle));
+
+		for (let i = 0; i < numRows; i++) {
+			for (let j = 0; j < numCols; j++) {
+				let vertex = Position.getVertex(
+					i,
+					j,
+					numRows,
+					numCols,
+					props.verticesRef
+				);
+
+				if (
+					vertex.absoluteIndex !== startVertex?.absoluteIndex &&
+					vertex.absoluteIndex !== endVertex?.absoluteIndex
+				) {
+					if (obstacle === 'wall') {
+						theme.cursorWall(vertex.element);
+					} else if (obstacle === 'obstacle1') {
+						theme.cursorObstacle1(vertex.element);
+					} else if (obstacle === 'obstacle2') {
+						theme.cursorObstacle2(vertex.element);
+					} else if (obstacle === 'obstacle3') {
+						theme.cursorObstacle3(vertex.element);
+					}
+				}
+			}
+		}
 	};
 
 	const handleThemeChanged = (e: MouseEvent<HTMLLIElement>) => {
-		// dispatch(Actions.setTheme());
+		const theme = e.currentTarget.getAttribute('value') as string;
+		dispatch(Actions.setTheme(themes[theme]));
+		setObstacles(obstacleOptions[theme]);
+		themes[theme].bodyBackground(
+			document.querySelector('body') as HTMLBodyElement
+		);
+		themes[theme].header(
+			document.getElementById('Header') as HTMLDivElement
+		);
+		themes[theme].heading(
+			document.getElementById('Heading') as HTMLHeadingElement
+		);
+		themes[theme].controller(
+			document.getElementById('Controller') as HTMLDivElement
+		);
+		const buttons = document.querySelectorAll('.' + styles.Button);
+		for (let i = 0; i < buttons.length; i++) {
+			themes[theme].button(buttons[i] as HTMLButtonElement);
+		}
+		let dropdown: HTMLCollection;
+		let dropdowns = document.querySelector('.' + styles.Dropdowns);
+		if (dropdowns) {
+			dropdown = dropdowns.children;
+			for (let i = 0; i < dropdown.length; i++) {
+				themes[theme].dropdown(
+					dropdown[i].children[1].children[0] as HTMLHeadingElement
+				);
+				themes[theme].options(
+					dropdown[i].children[1].children[1] as HTMLDivElement
+				);
+				let options = dropdown[i].children[1].children[1].children;
+				for (let j = 0; j < options.length; j++) {
+					themes[theme].option(
+						options[j].children[0] as HTMLLIElement
+					);
+				}
+			}
+		}
+		handleReset();
 	};
 
 	return (
-		<div className={classNames.join(' ')}>
+		<div className={classNames.join(' ')} id='Controller'>
 			<div className={styles.Dropdowns}>
 				<Dropdown
 					name='pathfinding-algorithms'
@@ -206,14 +271,10 @@ const Controller = (props: ControllerProps) => {
 					width='21rem'
 				></Dropdown>
 				<Dropdown
-					ref={(o) =>
-						(obstacleDropdown = o as {
-							heading: HTMLHeadingElement | null;
-						})
-					}
+					ref={(o) => (obstacleDropdown = o as DropdownRef)}
 					name='obstacles'
-					default='Tree (Weight: Infinity)'
-					options={obstacleOptions}
+					default={obstacles['wall']}
+					options={obstacles}
 					onChange={handleObstacleChanged}
 					classNames={[styles.Dropdown]}
 					label='Obstacle:'
@@ -221,7 +282,7 @@ const Controller = (props: ControllerProps) => {
 				></Dropdown>
 				<Dropdown
 					name='themes'
-					default='City'
+					default='Car'
 					options={themeOptions}
 					onChange={handleThemeChanged}
 					classNames={[styles.Dropdown]}

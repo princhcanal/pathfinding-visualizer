@@ -1,7 +1,7 @@
 import { RefObject } from 'react';
 import { ActionTypes } from './types';
 import * as actions from '../actions';
-import { pathfindingAlgorithms } from '../../utils/pathfinding/pathfindingAlgorithms';
+import { GraphTheme } from '../../utils/themes';
 
 export const initGraph = (
 	verticesRef: RefObject<HTMLDivElement>,
@@ -270,10 +270,10 @@ export const onRecalculatePath = (
 	};
 };
 
-export const setCurrentAlgorithm = (algorithm: string) => {
+export const setCurrentAlgorithm = (algorithm: Function) => {
 	return {
 		type: ActionTypes.SET_CURRENT_ALGORITHM,
-		currentAlgorithm: pathfindingAlgorithms[algorithm],
+		currentAlgorithm: algorithm,
 	};
 };
 
@@ -288,5 +288,12 @@ export const setNumCols = (numCols: number) => {
 	return {
 		type: ActionTypes.SET_NUM_COLS,
 		numCols,
+	};
+};
+
+export const setTheme = (theme: GraphTheme) => {
+	return {
+		type: ActionTypes.SET_THEME,
+		theme,
 	};
 };

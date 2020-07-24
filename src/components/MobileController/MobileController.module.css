@@ -1,12 +1,13 @@
 .MobileController {
 	display: none;
-	position: fixed;
+	/* position: fixed;
 	bottom: 5%;
 	left: 50%;
-	transform: translateX(-50%);
+	transform: translateX(-50%); */
 	justify-content: space-between;
 	align-items: center;
 	width: 90%;
+	margin: 0 auto 3rem;
 	background-color: rgba(0, 0, 0, 0.2);
 	border-radius: 0.3rem;
 	padding: 2rem 1rem;
@@ -90,7 +91,7 @@
 
 .Shake {
 	animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-	transform: translateX(-50%) translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
 	backface-visibility: hidden;
 	perspective: 1000px;
 }
@@ -98,23 +99,23 @@
 @keyframes shake {
 	10%,
 	90% {
-		transform: translateX(-50%) translate3d(-1px, 0, 0);
+		transform: translate3d(-1px, 0, 0);
 	}
 
 	20%,
 	80% {
-		transform: translateX(-50%) translate3d(2px, 0, 0);
+		transform: translate3d(2px, 0, 0);
 	}
 
 	30%,
 	50%,
 	70% {
-		transform: translateX(-50%) translate3d(-4px, 0, 0);
+		transform: translate3d(-4px, 0, 0);
 	}
 
 	40%,
 	60% {
-		transform: translateX(-50%) translate3d(4px, 0, 0);
+		transform: translate3d(4px, 0, 0);
 	}
 }
 

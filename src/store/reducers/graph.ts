@@ -3,7 +3,7 @@ import { Graph } from '../../utils/pathfinding/algorithms/graph';
 import * as Position from '../../utils/position';
 import { RefObject } from 'react';
 import * as algorithms from '../../utils/pathfinding/algorithms';
-import * as GraphThemes from '../../utils/themes';
+import { GraphTheme, themes } from '../../utils/themes';
 import { PathfindingStates } from '../../utils/pathfinding/pathfindingStates';
 
 export interface GraphState {
@@ -20,7 +20,7 @@ export interface GraphState {
 	obstacle3Indices: number[];
 	isAnimating: boolean;
 	currentAlgorithm: Function;
-	theme: GraphThemes.GraphTheme;
+	theme: GraphTheme;
 }
 
 export interface Vertex {
@@ -50,7 +50,7 @@ const initialState: GraphState = {
 	obstacle3Indices: [],
 	isAnimating: false,
 	currentAlgorithm: algorithms.dijkstra,
-	theme: GraphThemes.defaultTheme,
+	theme: themes['car'],
 };
 
 const setVerticesRef = (state: GraphState, action: any): GraphState => {
@@ -129,6 +129,13 @@ const setNumCols = (state: GraphState, action: any): GraphState => {
 	return {
 		...state,
 		numCols: action.numCols,
+	};
+};
+
+const setTheme = (state: GraphState, action: any): GraphState => {
+	return {
+		...state,
+		theme: action.theme,
 	};
 };
 
@@ -440,6 +447,8 @@ export const graphReducer = (
 			return setObstacle2Indices(state, action);
 		case ActionTypes.SET_OBSTACLE_3_INDICES:
 			return setObstacle3Indices(state, action);
+		case ActionTypes.SET_THEME:
+			return setTheme(state, action);
 		default:
 			return state;
 	}

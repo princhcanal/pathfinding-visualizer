@@ -13,8 +13,9 @@ import { StoreState } from '../../store/reducers';
 
 interface PathfindingVisualizerProps {}
 
-// TODO: implement mobile controls
-// TODO: implement themes (Road, Avengers, Star Wars, Pokemon, The Office, Friends, One Piece)
+// TODO: handle no path
+// TODO: improve algorithms
+// TODO: implement maze
 // TODO: remove verticesRef on graph actions
 // TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
 // TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
@@ -31,27 +32,6 @@ const PathfindingVisualizer = (props: PathfindingVisualizerProps) => {
 	const dragWallIndices = useSelector<StoreState, number[]>(
 		(state) => state.drag.wallIndices
 	);
-	// const graphWallIndices = useSelector<StoreState, number[]>(
-	// 	(state) => state.graph.wallIndices
-	// );
-	// const dragObstacle1Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.drag.obstacle1Indices
-	// );
-	// const graphObstacle1Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.graph.obstacle1Indices
-	// );
-	// const dragObstacle2Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.drag.obstacle2Indices
-	// );
-	// const graphObstacle2Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.graph.obstacle2Indices
-	// );
-	// const dragObstacle3Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.drag.obstacle3Indices
-	// );
-	// const graphObstacle3Indices = useSelector<StoreState, number[]>(
-	// 	(state) => state.graph.obstacle3Indices
-	// );
 
 	const verticesRef = useRef<HTMLDivElement>(null);
 

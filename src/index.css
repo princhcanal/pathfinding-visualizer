@@ -1,4 +1,9 @@
 @import url(./fonts/montserrat.css);
+@import url(./fonts/avengers.css);
+@import url(./fonts/onePiece.css);
+@import url(./fonts/lakers.css);
+@import url(./fonts/pokemon.css);
+@import url(./fonts/theOffice.css);
 
 :root {
 	--color-1: #292f36;

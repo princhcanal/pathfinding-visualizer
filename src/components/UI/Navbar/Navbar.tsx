@@ -1,8 +1,7 @@
 import React, { RefObject } from 'react';
-
 import styles from './Navbar.module.css';
 
-interface NavbarProps {
+export interface NavbarProps {
 	classNames?: string[];
 	verticesRef: RefObject<HTMLDivElement>;
 }
@@ -14,8 +13,10 @@ const Navbar = (props: NavbarProps) => {
 	}
 
 	return (
-		<header className={classNames.join(' ')}>
-			<h1 className={styles.Heading}>Pathfinding Visualizer</h1>
+		<header className={classNames.join(' ')} id='Header'>
+			<h1 className={styles.Heading} id='Heading'>
+				Pathfinding Visualizer
+			</h1>
 		</header>
 	);
 };
