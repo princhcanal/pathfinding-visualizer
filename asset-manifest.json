@@ -1,23 +1,27 @@
 {
   "files": {
     "main.css": "/pathfinding-visualizer/static/css/main.7114b010.chunk.css",
-    "main.js": "/pathfinding-visualizer/static/js/main.2850ae17.chunk.js",
-    "main.js.map": "/pathfinding-visualizer/static/js/main.2850ae17.chunk.js.map",
+    "main.js": "/pathfinding-visualizer/static/js/main.20e45712.chunk.js",
+    "main.js.map": "/pathfinding-visualizer/static/js/main.20e45712.chunk.js.map",
     "runtime-main.js": "/pathfinding-visualizer/static/js/runtime-main.b6ae0412.js",
     "runtime-main.js.map": "/pathfinding-visualizer/static/js/runtime-main.b6ae0412.js.map",
-    "static/js/2.0e6967fa.chunk.js": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js",
-    "static/js/2.0e6967fa.chunk.js.map": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js.map",
+    "static/js/2.432c3775.chunk.js": "/pathfinding-visualizer/static/js/2.432c3775.chunk.js",
+    "static/js/2.432c3775.chunk.js.map": "/pathfinding-visualizer/static/js/2.432c3775.chunk.js.map",
     "index.html": "/pathfinding-visualizer/index.html",
-    "precache-manifest.8bed0cd437fc15201c2f0128267891d4.js": "/pathfinding-visualizer/precache-manifest.8bed0cd437fc15201c2f0128267891d4.js",
+    "precache-manifest.49febae20a5424cedc530355a49d94dd.js": "/pathfinding-visualizer/precache-manifest.49febae20a5424cedc530355a49d94dd.js",
     "service-worker.js": "/pathfinding-visualizer/service-worker.js",
     "static/css/main.7114b010.chunk.css.map": "/pathfinding-visualizer/static/css/main.7114b010.chunk.css.map",
-    "static/js/2.0e6967fa.chunk.js.LICENSE.txt": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/pathfinding-visualizer/static/media/lakers.67ccf769.ttf"
+    "static/js/2.432c3775.chunk.js.LICENSE.txt": "/pathfinding-visualizer/static/js/2.432c3775.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/pathfinding-visualizer/static/media/lakers.67ccf769.ttf",
+    "static/media/car.png": "/pathfinding-visualizer/static/media/car.513b69bc.png",
+    "static/media/location.png": "/pathfinding-visualizer/static/media/location.0f61ba72.png",
+    "static/media/road-horizontal.jpg": "/pathfinding-visualizer/static/media/road-horizontal.b4b78514.jpg",
+    "static/media/road-vertical.jpg": "/pathfinding-visualizer/static/media/road-vertical.65e04c58.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.b6ae0412.js",
-    "static/js/2.0e6967fa.chunk.js",
+    "static/js/2.432c3775.chunk.js",
     "static/css/main.7114b010.chunk.css",
-    "static/js/main.2850ae17.chunk.js"
+    "static/js/main.20e45712.chunk.js"
   ]
 }
