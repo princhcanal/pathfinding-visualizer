@@ -1,10 +1,22 @@
 import { GraphTheme, Obstacle, is_touch_device } from './index';
 import * as Colors from '../colors';
+import car from './img/car.png';
+import location from './img/location.png';
+import carObstacle from './img/carObstacle.png';
+import carObstacleCursor from './img/carObstacleCursor.png';
+import rain from './img/rain.png';
+import rainCursor from './img/rainCursor.png';
+import cone from './img/cone.png';
+import coneCursor from './img/coneCursor.png';
+import hill from './img/hill.png';
+import hillCursor from './img/hillCursor.png';
+import roadHorizontal from './img/road-horizontal.jpg';
+import roadVertical from './img/road-vertical.jpg';
 
 export const carTheme: GraphTheme = {
 	start: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/car.png)';
+		vertex.style.backgroundImage = `url(${car})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
@@ -12,7 +24,7 @@ export const carTheme: GraphTheme = {
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/location.png)';
+		vertex.style.backgroundImage = `url(${location})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
@@ -20,53 +32,53 @@ export const carTheme: GraphTheme = {
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/carObstacle.png)';
+		vertex.style.backgroundImage = `url(${carObstacle})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
+		vertex.style.cursor = `url(${carObstacleCursor}), pointer`;
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
+		vertex.style.cursor = `url(${carObstacleCursor}), pointer`;
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/rain.png)';
+		vertex.style.backgroundImage = `url(${rain})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/rainCursor.png), pointer';
+		vertex.style.cursor = `url(${rainCursor}), pointer`;
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/rainCursor.png), pointer';
+		vertex.style.cursor = `url(${rainCursor}), pointer`;
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/cone.png)';
+		vertex.style.backgroundImage = `url(${cone})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/coneCursor.png), pointer';
+		vertex.style.cursor = `url(${coneCursor}), pointer`;
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/coneCursor.png), pointer';
+		vertex.style.cursor = `url(${coneCursor}), pointer`;
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/hill.png)';
+		vertex.style.backgroundImage = `url(${hill})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/hillCursor.png), pointer';
+		vertex.style.cursor = `url(${hillCursor}), pointer`;
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/hillCursor.png), pointer';
+		vertex.style.cursor = `url(${hillCursor}), pointer`;
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_WALL;
-		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
+		vertex.style.cursor = `url(${carObstacleCursor}), pointer`;
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_VISITED;
@@ -75,45 +87,41 @@ export const carTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_VISITING;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/car.png), url(/img/road-horizontal.jpg)';
+		vertex.style.backgroundImage = `url(${car}), url(${roadHorizontal})`;
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
 		vertex.style.backgroundSize = '90%, cover';
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/car.png), url(/img/road-vertical.jpg)';
+		vertex.style.backgroundImage = `url(${car}), url(${roadVertical})`;
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
 		vertex.style.backgroundSize = '90%, cover';
 		vertex.style.cursor = 'grab';
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/location.png), url(/img/road-horizontal.jpg)';
+		vertex.style.backgroundImage = `url(${location}), url(${roadHorizontal})`;
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
 		vertex.style.backgroundSize = '90%, cover';
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/location.png), url(/img/road-vertical.jpg)';
+		vertex.style.backgroundImage = `url(${location}), url(${roadVertical})`;
 		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
 		vertex.style.backgroundPosition = 'center, center';
 		vertex.style.backgroundSize = '90%, cover';
 		vertex.style.cursor = 'grab';
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/road-horizontal.jpg)';
+		vertex.style.backgroundImage = `url(${roadHorizontal})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
 	},
 	pathVertical: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/road-vertical.jpg)';
+		vertex.style.backgroundImage = `url(${roadVertical})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
