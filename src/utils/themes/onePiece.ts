@@ -1,10 +1,21 @@
 import { GraphTheme, Obstacle, is_touch_device } from './index';
 import * as Colors from '../colors';
+import strawhat from './img/strawhat.png';
+import treasure from './img/treasure.png';
+import kaido from './img/kaido.png';
+import kaidoCursor from './img/kaidoCursor.png';
+import bigmom from './img/bigmom.png';
+import bigmomCursor from './img/bigmomCursor.png';
+import shanks from './img/shanks.png';
+import shanksCursor from './img/shanksCursor.png';
+import blackbeard from './img/blackbeard.png';
+import blackbeardCursor from './img/blackbeardCursor.png';
+import sunny from './img/sunny.png';
 
 export const onePieceTheme: GraphTheme = {
 	start: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/strawhat.png)';
+		vertex.style.backgroundImage = `url(${strawhat})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
@@ -12,7 +23,7 @@ export const onePieceTheme: GraphTheme = {
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/treasure.png)';
+		vertex.style.backgroundImage = `url(${treasure})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
@@ -20,53 +31,53 @@ export const onePieceTheme: GraphTheme = {
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/kaido.png)';
+		vertex.style.backgroundImage = `url(${kaido})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/kaidoCursor.png), pointer';
+		vertex.style.cursor = `url(${kaidoCursor}), pointer`;
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/kaidoCursor.png), pointer';
+		vertex.style.cursor = `url(${kaidoCursor}), pointer`;
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/bigmom.png)';
+		vertex.style.backgroundImage = `url(${bigmom})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/bigmomCursor.png), pointer';
+		vertex.style.cursor = `url(${bigmomCursor}), pointer`;
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/bigmomCursor.png), pointer';
+		vertex.style.cursor = `url(${bigmomCursor}), pointer`;
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/shanks.png)';
+		vertex.style.backgroundImage = `url(${shanks})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/shanksCursor.png), pointer';
+		vertex.style.cursor = `url(${shanksCursor}), pointer`;
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/shanksCursor.png), pointer';
+		vertex.style.cursor = `url(${shanksCursor}), pointer`;
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/blackbeard.png)';
+		vertex.style.backgroundImage = `url(${blackbeard})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/blackbeardCursor.png), pointer';
+		vertex.style.cursor = `url(${blackbeardCursor}), pointer`;
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/blackbeardCursor.png), pointer';
+		vertex.style.cursor = `url(${blackbeardCursor}), pointer`;
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_ONEPIECE_RED;
-		vertex.style.cursor = 'url(/img/kaidoCursor.png), pointer';
+		vertex.style.cursor = `url(${kaidoCursor}), pointer`;
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_YELLOW;
@@ -75,30 +86,30 @@ export const onePieceTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/strawhat.png)';
+		vertex.style.backgroundImage = `url(${strawhat})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/strawhat.png)';
+		vertex.style.backgroundImage = `url(${strawhat})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/treasure.png)';
+		vertex.style.backgroundImage = `url(${treasure})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/treasure.png)';
+		vertex.style.backgroundImage = `url(${treasure})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/sunny.png)';
+		vertex.style.backgroundImage = `url(${sunny})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
 	},
 	pathVertical: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/sunny.png)';
+		vertex.style.backgroundImage = `url(${sunny})`;
 		vertex.style.backgroundColor = Colors.COLOR_ONEPIECE_RED;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';

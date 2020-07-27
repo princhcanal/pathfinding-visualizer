@@ -1,10 +1,20 @@
 import { GraphTheme, Obstacle, is_touch_device } from './index';
 import * as Colors from '../colors';
+import gon from './img/gon.png';
+import ging from './img/ging.png';
+import hisoka from './img/hisoka.png';
+import hisokaCursor from './img/hisokaCursor.png';
+import troupe from './img/troupe.png';
+import troupeCursor from './img/troupeCursor.png';
+import razor from './img/razor.png';
+import razorCursor from './img/razorCursor.png';
+import meruem from './img/meruem.png';
+import meruemCursor from './img/meruemCursor.png';
 
 export const hunterxhunterTheme: GraphTheme = {
 	start: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/gon.png)';
+		vertex.style.backgroundImage = `url(${gon})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%;';
@@ -12,7 +22,7 @@ export const hunterxhunterTheme: GraphTheme = {
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/ging.png)';
+		vertex.style.backgroundImage = `url(${ging})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
@@ -20,53 +30,53 @@ export const hunterxhunterTheme: GraphTheme = {
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/hisoka.png)';
+		vertex.style.backgroundImage = `url(${hisoka})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
+		vertex.style.cursor = `url(${hisokaCursor}), pointer`;
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
+		vertex.style.cursor = `url(${hisokaCursor}), pointer`;
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/troupe.png)';
+		vertex.style.backgroundImage = `url(${troupe})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/troupeCursor.png), pointer';
+		vertex.style.cursor = `url(${troupeCursor}), pointer`;
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/troupeCursor.png), pointer';
+		vertex.style.cursor = `url(${troupeCursor}), pointer`;
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/razor.png)';
+		vertex.style.backgroundImage = `url(${razor})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '40%';
-		vertex.style.cursor = 'url(/img/razorCursor.png), pointer';
+		vertex.style.cursor = `url(${razorCursor}), pointer`;
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/razorCursor.png), pointer';
+		vertex.style.cursor = `url(${razorCursor}), pointer`;
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/meruem.png)';
+		vertex.style.backgroundImage = `url(${meruem})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/meruemCursor.png), pointer';
+		vertex.style.cursor = `url(${meruemCursor}), pointer`;
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/meruemCursor.png), pointer';
+		vertex.style.cursor = `url(${meruemCursor}), pointer`;
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_HUNTERXHUNTER_GREEN;
-		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
+		vertex.style.cursor = `url(${hisokaCursor}), pointer`;
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_GREEN;
@@ -75,19 +85,19 @@ export const hunterxhunterTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_DARK_ORANGE;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/gon.png)';
+		vertex.style.backgroundImage = `url(${gon})`;
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_DARK_ORANGE;
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/gon.png)';
+		vertex.style.backgroundImage = `url(${gon})`;
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_DARK_ORANGE;
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/ging.png)';
+		vertex.style.backgroundImage = `url(${ging})`;
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_DARK_ORANGE;
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/ging.png)';
+		vertex.style.backgroundImage = `url(${ging})`;
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_DARK_ORANGE;
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {

@@ -1,10 +1,20 @@
 import { GraphTheme, Obstacle, is_touch_device } from './index';
 import * as Colors from '../colors';
+import thanos from './img/thanos.png';
+import gauntlet from './img/gauntlet.png';
+import ironMan from './img/ironMan.png';
+import ironManCursor from './img/ironMan.png';
+import captainAmerica from './img/captainAmerica.png';
+import captainAmericaCursor from './img/captainAmerica.png';
+import thor from './img/thor.png';
+import thorCursor from './img/thor.png';
+import captainMarvel from './img/captainMarvel.png';
+import captainMarvelCursor from './img/captainMarvel.png';
 
 export const avengersTheme: GraphTheme = {
 	start: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/thanos.png)';
+		vertex.style.backgroundImage = `url(${thanos})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
@@ -12,7 +22,7 @@ export const avengersTheme: GraphTheme = {
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/gauntlet.png)';
+		vertex.style.backgroundImage = `url(${gauntlet})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '40%';
@@ -20,53 +30,53 @@ export const avengersTheme: GraphTheme = {
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/ironMan.png)';
+		vertex.style.backgroundImage = `url(${ironMan})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '40%';
-		vertex.style.cursor = 'url(/img/ironManCursor.png), pointer';
+		vertex.style.cursor = `url(${ironManCursor}), pointer`;
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/ironManCursor.png), pointer';
+		vertex.style.cursor = `url(${ironManCursor}), pointer`;
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/captainAmerica.png)';
+		vertex.style.backgroundImage = `url(${captainAmerica})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '50%';
-		vertex.style.cursor = 'url(/img/captainAmericaCursor.png), pointer';
+		vertex.style.cursor = `url(${captainAmericaCursor}), pointer`;
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/captainAmericaCursor.png), pointer';
+		vertex.style.cursor = `url(${captainAmericaCursor}), pointer`;
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/thor.png)';
+		vertex.style.backgroundImage = `url(${thor})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '60%';
-		vertex.style.cursor = 'url(/img/thorCursor.png), pointer';
+		vertex.style.cursor = `url(${thorCursor}), pointer`;
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/thorCursor.png), pointer';
+		vertex.style.cursor = `url(${thorCursor}), pointer`;
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/captainMarvel.png)';
+		vertex.style.backgroundImage = `url(${captainMarvel})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/captainMarvelCursor.png), pointer';
+		vertex.style.cursor = `url(${captainMarvelCursor}), pointer`;
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/captainMarvelCursor.png), pointer';
+		vertex.style.cursor = `url(${captainMarvelCursor}), pointer`;
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_AVENGERS_GOLD;
-		vertex.style.cursor = 'url(/img/ironManCursor.png), pointer';
+		vertex.style.cursor = `url(${ironManCursor}), pointer`;
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_PURPLE;
@@ -75,19 +85,19 @@ export const avengersTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_GOLD;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/thanos.png)';
+		vertex.style.backgroundImage = `url(${thanos})`;
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_GOLD;
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/thanos.png)';
+		vertex.style.backgroundImage = `url(${thanos})`;
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_GOLD;
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/gauntlet.png)';
+		vertex.style.backgroundImage = `url(${gauntlet})`;
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_GOLD;
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/gauntlet.png)';
+		vertex.style.backgroundImage = `url(${gauntlet})`;
 		vertex.style.backgroundColor = Colors.COLOR_AVENGERS_GOLD;
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {

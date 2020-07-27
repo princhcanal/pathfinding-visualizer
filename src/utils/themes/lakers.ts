@@ -1,10 +1,19 @@
 import { GraphTheme, Obstacle, is_touch_device } from './index';
 import * as Colors from '../colors';
+import lakers from './img/lakers.png';
+import trophy from './img/trophy.png';
+import celtics from './img/celtics.png';
+import celticsCursor from './img/celticsCursor.png';
+import pistons from './img/pistons.png';
+import pistonsCursor from './img/pistonsCursor.png';
+import clippers from './img/clippers.png';
+import clippersCursor from './img/clippersCursor.png';
+import spurs from './img/spurs.png';
 
 export const lakersTheme: GraphTheme = {
 	start: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/lakers.png)';
+		vertex.style.backgroundImage = `url(${lakers})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
@@ -12,7 +21,7 @@ export const lakersTheme: GraphTheme = {
 	},
 	end: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/trophy.png)';
+		vertex.style.backgroundImage = `url(${trophy})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '40%';
@@ -20,53 +29,53 @@ export const lakersTheme: GraphTheme = {
 	},
 	wall: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/celtics.png)';
+		vertex.style.backgroundImage = `url(${celtics})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
+		vertex.style.cursor = `url(${celticsCursor}), pointer`;
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
+		vertex.style.cursor = `url(${celticsCursor}), pointer`;
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/pistons.png)';
+		vertex.style.backgroundImage = `url(${pistons})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '140%';
-		vertex.style.cursor = 'url(/img/pistonsCursor.png), pointer';
+		vertex.style.cursor = `url(${pistonsCursor}), pointer`;
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/pistonsCursor.png), pointer';
+		vertex.style.cursor = `url(${pistonsCursor}), pointer`;
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/clippers.png)';
+		vertex.style.backgroundImage = `url(${clippers})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/clippersCursor.png), pointer';
+		vertex.style.cursor = `url(${clippersCursor}), pointer`;
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/clippersCursor.png), pointer';
+		vertex.style.cursor = `url(${clippersCursor}), pointer`;
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
-		vertex.style.backgroundImage = 'url(/img/spurs.png)';
+		vertex.style.backgroundImage = `url(${spurs})`;
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/spurs.png), pointer';
+		vertex.style.cursor = `url(${spurs}), pointer`;
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/spurs.png), pointer';
+		vertex.style.cursor = `url(${spurs}), pointer`;
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_LAKERS_GOLD;
-		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
+		vertex.style.cursor = `url(${celticsCursor}), pointer`;
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_GOLD;
@@ -75,22 +84,22 @@ export const lakersTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_BLACK;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/lakers.png)';
+		vertex.style.backgroundImage = `url(${lakers})`;
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/lakers.png)';
+		vertex.style.backgroundImage = `url(${lakers})`;
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/trophy.png)';
+		vertex.style.backgroundImage = `url(${trophy})`;
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/trophy.png)';
+		vertex.style.backgroundImage = `url(${trophy})`;
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
