@@ -40,6 +40,7 @@ const Controller = (props: ControllerProps) => {
 	const dispatch = useDispatch();
 
 	const [obstacles, setObstacles] = useState(obstacleOptions['car']);
+	const [speed, setSpeed] = useState(25);
 	const graph = useSelector<StoreState, Graph>((state) => state.graph.graph);
 	const numRows = useSelector<StoreState, number>(
 		(state) => state.graph.numRows
@@ -125,11 +126,14 @@ const Controller = (props: ControllerProps) => {
 						animation.state === PathfindingStates.PATH_VERTICAL
 					) {
 						theme.pathVertical(vertex.element);
-					} else if (animation.state === PathfindingStates.DONE) {
+					} else if (
+						animation.state === PathfindingStates.DONE ||
+						animation.state === PathfindingStates.NO_PATH
+					) {
 						dispatch(Actions.setIsAnimating(false));
 						dispatch(Actions.setIsDoneAnimating(true));
 					}
-				}, 10 * i)
+				}, speed * i)
 			);
 		}
 	};
@@ -258,6 +262,18 @@ const Controller = (props: ControllerProps) => {
 		handleReset();
 	};
 
+	const handleSpeedChanged = (e: MouseEvent<HTMLLIElement>) => {
+		setSpeed(parseInt(e.currentTarget.getAttribute('value') as string));
+	};
+
+	const speedOptions = {
+		10: 'Very Fast',
+		25: 'Fast',
+		100: 'Medium',
+		500: 'Slow',
+		2000: 'Very Slow',
+	};
+
 	return (
 		<div className={classNames.join(' ')} id='Controller'>
 			<div className={styles.Dropdowns}>
@@ -268,6 +284,15 @@ const Controller = (props: ControllerProps) => {
 					onChange={handleAlgorithmChanged}
 					classNames={[styles.Dropdown]}
 					label='Algorithm:'
+					width='21rem'
+				></Dropdown>
+				<Dropdown
+					name='speed'
+					default='Fast'
+					options={speedOptions}
+					onChange={handleSpeedChanged}
+					classNames={[styles.Dropdown]}
+					label='Speed:'
 					width='21rem'
 				></Dropdown>
 				<Dropdown

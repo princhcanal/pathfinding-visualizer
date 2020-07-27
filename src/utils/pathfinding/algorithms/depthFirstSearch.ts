@@ -1,6 +1,7 @@
 import { Graph } from './graph';
 import * as GraphTypes from './graphTypes';
 import { PathfindingStates } from '../pathfindingStates';
+import { buildPath } from './buildPath';
 
 export const depthFirstSearch = (
 	graph: Graph,
@@ -9,21 +10,19 @@ export const depthFirstSearch = (
 ): GraphTypes.PathfindingAnimation[] => {
 	let visited: number[] = [];
 	let pathfindingAnimations: GraphTypes.PathfindingAnimation[] = [];
+	let previous: GraphTypes.Previous = {};
+	let path: number[] = [];
 
-	depthFirstSearchUtil(graph, start, end, visited, pathfindingAnimations);
+	depthFirstSearchUtil(
+		graph,
+		start,
+		end,
+		visited,
+		pathfindingAnimations,
+		previous
+	);
 
-	for (let i = 0; i < visited.length; i++) {
-		if (visited[i] !== start && visited[i] !== end)
-			pathfindingAnimations.push({
-				index: visited[i],
-				state: PathfindingStates.PATH,
-			});
-	}
-
-	pathfindingAnimations.push({
-		index: 0,
-		state: PathfindingStates.DONE,
-	});
+	buildPath(pathfindingAnimations, end, previous, path, start, end, graph);
 
 	return pathfindingAnimations;
 };
@@ -33,7 +32,8 @@ const depthFirstSearchUtil = (
 	start: number,
 	end: number,
 	visited: number[],
-	pathfindingAnimations: GraphTypes.PathfindingAnimation[]
+	pathfindingAnimations: GraphTypes.PathfindingAnimation[],
+	previous: GraphTypes.Previous
 ) => {
 	visited.push(start);
 
@@ -50,8 +50,10 @@ const depthFirstSearchUtil = (
 					neighbor.node,
 					end,
 					visited,
-					pathfindingAnimations
+					pathfindingAnimations,
+					previous
 				);
+				previous[neighbor.node] = start;
 			}
 		}
 	}

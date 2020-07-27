@@ -27,6 +27,15 @@ export class Graph {
 		});
 	}
 
+	getEdgeWeight(vertex1: number, vertex2: number) {
+		for (const edge of this.adjacencyList[vertex1]) {
+			if (edge.node === vertex2) {
+				return edge.weight;
+			}
+		}
+		return Infinity;
+	}
+
 	getHeuristic(vertex1: GraphTypes.Vertex, vertex2: GraphTypes.Vertex) {
 		return (
 			Math.abs(vertex1.x - vertex2.x) + Math.abs(vertex1.y - vertex2.y)

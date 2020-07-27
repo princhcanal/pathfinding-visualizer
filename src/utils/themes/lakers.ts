@@ -7,7 +7,7 @@ export const lakersTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/lakers.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '140%';
+		vertex.style.backgroundSize = '100%';
 		vertex.style.cursor = 'grab';
 	},
 	end: (vertex: HTMLDivElement) => {
@@ -23,40 +23,40 @@ export const lakersTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/celtics.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
-		vertex.style.cursor = 'url(/img/celtics.png), pointer';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/celtics.png), pointer';
+		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/pistons.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/pistons.png), pointer';
+		vertex.style.backgroundSize = '140%';
+		vertex.style.cursor = 'url(/img/pistonsCursor.png), pointer';
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/pistons.png), pointer';
+		vertex.style.cursor = 'url(/img/pistonsCursor.png), pointer';
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/clippers.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/clippers.png), pointer';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'url(/img/clippersCursor.png), pointer';
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/clippers.png), pointer';
+		vertex.style.cursor = 'url(/img/clippersCursor.png), pointer';
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/spurs.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
+		vertex.style.backgroundSize = '80%';
 		vertex.style.cursor = 'url(/img/spurs.png), pointer';
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
@@ -66,7 +66,7 @@ export const lakersTheme: GraphTheme = {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_LAKERS_GOLD;
-		vertex.style.cursor = 'url(/img/celtics.png), pointer';
+		vertex.style.cursor = 'url(/img/celticsCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_GOLD;
@@ -75,55 +75,37 @@ export const lakersTheme: GraphTheme = {
 		vertex.style.backgroundColor = Colors.COLOR_LAKERS_BLACK;
 	},
 	pathHorizontalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/lakers.png), url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
-		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = '140%, cover';
+		vertex.style.backgroundImage = 'url(/img/lakers.png)';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalStart: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/lakers.png), url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
-		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = '140%, cover';
+		vertex.style.backgroundImage = 'url(/img/lakers.png)';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathHorizontalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/trophy.png), url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
-		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = '40%, cover';
+		vertex.style.backgroundImage = 'url(/img/trophy.png)';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathVerticalEnd: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage =
-			'url(/img/trophy.png), url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat, no-repeat';
-		vertex.style.backgroundPosition = 'center, center';
-		vertex.style.backgroundSize = '40%, cover';
+		vertex.style.backgroundImage = 'url(/img/trophy.png)';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 		vertex.style.cursor = 'grab';
 	},
 	pathHorizontal: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat';
-		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 	},
 	pathVertical: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = 'url(/img/basketball.png)';
-		vertex.style.backgroundRepeat = 'no-repeat';
-		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
+		vertex.style.backgroundColor = Colors.COLOR_LAKERS_WHITE;
 	},
 	revertObstacle: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 	},
 	revertPath: (vertex: HTMLDivElement) => {
-		vertex.style.backgroundImage = '';
+		vertex.style.backgroundColor = '';
 	},
 	bodyBackground: (body: HTMLBodyElement) => {
 		body.style.background = Colors.COLOR_LAKERS_PURPLE;
@@ -187,7 +169,7 @@ export const lakersTheme: GraphTheme = {
 };
 
 export const lakersObstacleOptions: Obstacle = {
-	wall: 'Celtics (Weight: Infinity)',
+	wall: 'Celtics (Barrier)',
 	obstacle1: 'Pistons (Weight: 2)',
 	obstacle2: 'Clippers (Weight: 3)',
 	obstacle3: 'Spurs (Weight: 4)',

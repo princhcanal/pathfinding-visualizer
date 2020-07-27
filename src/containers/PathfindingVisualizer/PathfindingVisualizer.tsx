@@ -13,9 +13,8 @@ import { StoreState } from '../../store/reducers';
 
 interface PathfindingVisualizerProps {}
 
-// TODO: handle no path
-// TODO: improve algorithms
 // TODO: implement maze
+// TODO: improve algorithms
 // TODO: remove verticesRef on graph actions
 // TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR
 // TODO: refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor REFACTOR REFACTOR REFACTOR REFACTOR refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor refactor REFACTOR REFACTOR

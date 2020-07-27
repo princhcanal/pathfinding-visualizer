@@ -7,7 +7,7 @@ export const hunterxhunterTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/gon.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
+		vertex.style.backgroundSize = '100%;';
 		vertex.style.cursor = 'grab';
 	},
 	end: (vertex: HTMLDivElement) => {
@@ -15,7 +15,7 @@ export const hunterxhunterTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/ging.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '90%';
+		vertex.style.backgroundSize = '80%';
 		vertex.style.cursor = 'grab';
 	},
 	wall: (vertex: HTMLDivElement) => {
@@ -24,32 +24,32 @@ export const hunterxhunterTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/hisoka.png), pointer';
+		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/hisoka.png), pointer';
+		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/troupe.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/troupe.png), pointer';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'url(/img/troupeCursor.png), pointer';
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/troupe.png), pointer';
+		vertex.style.cursor = 'url(/img/troupeCursor.png), pointer';
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/razor.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '30%';
-		vertex.style.cursor = 'url(/img/razor.png), pointer';
+		vertex.style.backgroundSize = '40%';
+		vertex.style.cursor = 'url(/img/razorCursor.png), pointer';
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/razor.png), pointer';
+		vertex.style.cursor = 'url(/img/razorCursor.png), pointer';
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -57,16 +57,16 @@ export const hunterxhunterTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/meruem.png), pointer';
+		vertex.style.cursor = 'url(/img/meruemCursor.png), pointer';
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/meruem.png), pointer';
+		vertex.style.cursor = 'url(/img/meruemCursor.png), pointer';
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_HUNTERXHUNTER_GREEN;
-		vertex.style.cursor = 'url(/img/hisoka.png), pointer';
+		vertex.style.cursor = 'url(/img/hisokaCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_HUNTERXHUNTER_GREEN;
@@ -166,7 +166,7 @@ export const hunterxhunterTheme: GraphTheme = {
 };
 
 export const hunterxhunterObstacleOptions: Obstacle = {
-	wall: 'Hisoka (Weight: Infinity)',
+	wall: 'Hisoka (Barrier)',
 	obstacle1: 'Phantom Troupe (Weight: 2)',
 	obstacle2: 'Razor (Weight: 3)',
 	obstacle3: 'Meruem (Weight: 4)',

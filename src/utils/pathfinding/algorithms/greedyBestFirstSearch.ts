@@ -26,19 +26,25 @@ export const greedyBestFirstSearch = (
 	let visited: number[] = [];
 	let pathfindingAnimation: GraphTypes.PathfindingAnimation[] = [];
 	let path: number[] = [];
+	let foundEnd = false;
 
 	nodes.enqueue(start, 0);
 	previous[start] = NaN;
 
 	visited.push(start);
 
+	pathfindingAnimation.push({
+		index: start,
+		state: PathfindingStates.VISITING,
+	});
+
 	while (nodes.values.length) {
 		let current = nodes.dequeue();
 
-		pathfindingAnimation.push({
-			index: current.node,
-			state: PathfindingStates.VISITING,
-		});
+		// pathfindingAnimation.push({
+		// 	index: current.node,
+		// 	state: PathfindingStates.VISITING,
+		// });
 
 		if (current.node === end) {
 			buildPath(
@@ -54,13 +60,30 @@ export const greedyBestFirstSearch = (
 			break;
 		}
 
-		for (let neighbor of graph.adjacencyList[current.node]) {
+		for (const neighbor of graph.adjacencyList[current.node]) {
 			if (!(neighbor.node in previous)) {
-				let priority = graph.getHeuristic(endVertex, neighbor);
-				nodes.enqueue(neighbor.node, priority);
+				if (!foundEnd) {
+					pathfindingAnimation.push({
+						index: neighbor.node,
+						state: PathfindingStates.VISITING,
+					});
+					if (neighbor.node === end) {
+						foundEnd = true;
+					}
+				}
+
+				const priority = graph.getHeuristic(neighbor, endVertex);
 				previous[neighbor.node] = current.node;
+				nodes.enqueue(neighbor.node, priority);
 			}
 		}
+	}
+
+	if (path.length === 0) {
+		pathfindingAnimation.push({
+			index: 0,
+			state: PathfindingStates.NO_PATH,
+		});
 	}
 
 	return pathfindingAnimation;

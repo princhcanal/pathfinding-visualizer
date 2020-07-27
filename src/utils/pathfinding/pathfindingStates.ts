@@ -8,4 +8,5 @@ export enum PathfindingStates {
 	PATH_VERTICAL,
 	PATH_HORIZONTAL,
 	DONE,
+	NO_PATH,
 }

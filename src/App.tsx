@@ -9,10 +9,7 @@ const App = () => {
 	const dispatch = useDispatch();
 
 	const updateSize = useCallback(() => {
-		if (window.innerWidth <= 400) {
-			dispatch(Actions.setNumRows(11));
-			dispatch(Actions.setNumCols(5));
-		} else if (window.innerWidth <= 500) {
+		if (window.innerWidth <= 500) {
 			dispatch(Actions.setNumRows(11));
 			dispatch(Actions.setNumCols(9));
 		} else if (window.innerWidth <= 600) {

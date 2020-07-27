@@ -15,12 +15,18 @@ export const dijkstra = (
 	let path: number[] = [];
 	let pathfindingAnimation: GraphTypes.PathfindingAnimation[] = [];
 
-	nodes.enqueue(start, 0);
-	previous[start] = NaN;
+	for (const vertex in graph.adjacencyList) {
+		const vertexIndex = parseInt(vertex);
+		distances[vertexIndex] = Infinity;
+		previous[vertexIndex] = NaN;
+		nodes.enqueue(vertexIndex, Infinity);
+	}
 	distances[start] = 0;
+	previous[start] = NaN;
+	nodes.updatePriority(start, 0);
 
 	while (nodes.values.length) {
-		let current = nodes.dequeue();
+		const current = nodes.dequeue();
 
 		pathfindingAnimation.push({
 			index: current.node,
@@ -30,7 +36,7 @@ export const dijkstra = (
 		if (current.node === end) {
 			buildPath(
 				pathfindingAnimation,
-				current.node,
+				end,
 				previous,
 				path,
 				start,
@@ -41,18 +47,24 @@ export const dijkstra = (
 			break;
 		}
 
-		for (let neighbor of graph.adjacencyList[current.node]) {
-			let newCost = distances[current.node] + neighbor.weight;
+		for (const neighbor of graph.adjacencyList[current.node]) {
+			const newCost =
+				distances[current.node] +
+				graph.getEdgeWeight(current.node, neighbor.node);
 
-			if (
-				!(neighbor.node in distances) ||
-				newCost < distances[neighbor.node]
-			) {
+			if (newCost < distances[neighbor.node]) {
 				distances[neighbor.node] = newCost;
-				nodes.enqueue(neighbor.node, newCost);
 				previous[neighbor.node] = current.node;
+				nodes.updatePriority(neighbor.node, newCost);
 			}
 		}
+	}
+
+	if (path.length === 0) {
+		pathfindingAnimation.push({
+			index: 0,
+			state: PathfindingStates.NO_PATH,
+		});
 	}
 
 	return pathfindingAnimation;

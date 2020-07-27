@@ -13,8 +13,17 @@ export function absoluteToIndex(
 	numRows: number,
 	numCols: number
 ) {
-	let row = Math.floor(index / numCols);
-	let col = index % numCols;
+	let row = 0;
+	let col = 0;
+
+	for (let i = 0; i < numRows; i++) {
+		for (let j = 0; j < numCols; j++) {
+			if (i * numCols + j === index) {
+				row = i;
+				col = j;
+			}
+		}
+	}
 	return { row, col };
 }
 

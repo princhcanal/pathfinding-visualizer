@@ -23,11 +23,11 @@ export const carTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/carObstacle.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
-		vertex.style.cursor = 'url(/img/carObstacle.png), pointer';
+		vertex.style.backgroundSize = '90%';
+		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/carObstacle.png), pointer';
+		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -35,10 +35,10 @@ export const carTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '90%';
-		vertex.style.cursor = 'url(/img/rain.png), pointer';
+		vertex.style.cursor = 'url(/img/rainCursor.png), pointer';
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/rain.png), pointer';
+		vertex.style.cursor = 'url(/img/rainCursor.png), pointer';
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -46,10 +46,10 @@ export const carTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/cone.png), pointer';
+		vertex.style.cursor = 'url(/img/coneCursor.png), pointer';
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/cone.png), pointer';
+		vertex.style.cursor = 'url(/img/coneCursor.png), pointer';
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -57,16 +57,16 @@ export const carTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/hill.png), pointer';
+		vertex.style.cursor = 'url(/img/hillCursor.png), pointer';
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/hill.png), pointer';
+		vertex.style.cursor = 'url(/img/hillCursor.png), pointer';
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_WALL;
-		vertex.style.cursor = 'url(/img/carObstacle.png), pointer';
+		vertex.style.cursor = 'url(/img/carObstacleCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_VISITED;
@@ -187,7 +187,7 @@ export const carTheme: GraphTheme = {
 };
 
 export const carObstacleOptions: Obstacle = {
-	wall: 'Car (Weight: Infinity)',
+	wall: 'Car (Barrier)',
 	obstacle1: 'Rain (Weight: 2)',
 	obstacle2: 'Cone (Weight: 3)',
 	obstacle3: 'Hill (Weight: 4)',

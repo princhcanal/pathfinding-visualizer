@@ -7,7 +7,7 @@ export const theOfficeTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/holly.jpg)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
+		vertex.style.backgroundSize = '80%';
 		vertex.style.cursor = 'grab';
 	},
 	end: (vertex: HTMLDivElement) => {
@@ -15,7 +15,7 @@ export const theOfficeTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/michael.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '70%';
+		vertex.style.backgroundSize = '100%';
 		vertex.style.cursor = 'grab';
 	},
 	wall: (vertex: HTMLDivElement) => {
@@ -24,21 +24,21 @@ export const theOfficeTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = 'cover';
-		vertex.style.cursor = 'url(/img/gasStation.png), pointer';
+		vertex.style.cursor = 'url(/img/gasStationCursor.png), pointer';
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/gasStation.png), pointer';
+		vertex.style.cursor = 'url(/img/gasStationCursor.png), pointer';
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/phone.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/phone.png), pointer';
+		vertex.style.backgroundSize = '80%';
+		vertex.style.cursor = 'url(/img/phoneCursor.png), pointer';
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/phone.png), pointer';
+		vertex.style.cursor = 'url(/img/phoneCursor.png), pointer';
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -46,27 +46,27 @@ export const theOfficeTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '80%';
-		vertex.style.cursor = 'url(/img/chineseFood.png), pointer';
+		vertex.style.cursor = 'url(/img/chineseFoodCursor.png), pointer';
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/chineseFood.png), pointer';
+		vertex.style.cursor = 'url(/img/chineseFoodCursor.png), pointer';
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = 'url(/img/building.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = '70%';
-		vertex.style.cursor = 'url(/img/building.png), pointer';
+		vertex.style.backgroundSize = '60%';
+		vertex.style.cursor = 'url(/img/buildingCursor.png), pointer';
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/building.png), pointer';
+		vertex.style.cursor = 'url(/img/buildingCursor.png), pointer';
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_THEOFFICE_WHITE;
-		vertex.style.cursor = 'url(/img/gasStation.png), pointer';
+		vertex.style.cursor = 'url(/img/gasStationCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_THEOFFICE_WHITE;
@@ -165,7 +165,7 @@ export const theOfficeTheme: GraphTheme = {
 };
 
 export const theOfficeObstacleOptions: Obstacle = {
-	wall: 'Gas Station (Weight: Infinity)',
+	wall: 'Gas Station (Barrier)',
 	obstacle1: 'Cellphone Store (Weight: 2)',
 	obstacle2: "Mr. Choo's Chinese Food (Weight: 3)",
 	obstacle3: 'Top of Building (Weight: 4)',

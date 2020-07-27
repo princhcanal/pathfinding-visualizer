@@ -1,5 +1,5 @@
 import { Graph } from './graph';
-import { PriorityQueue } from './priorityQueue';
+import { PriorityQueueFast } from './priorityQueue';
 import * as GraphTypes from './graphTypes';
 import * as Position from '../../position';
 import { PathfindingStates } from '../pathfindingStates';
@@ -10,10 +10,9 @@ export const aStar = (
 	start: number,
 	end: number
 ): GraphTypes.PathfindingAnimation[] => {
-	let nodes = new PriorityQueue(graph.numRows, graph.numCols);
+	let nodes = new PriorityQueueFast(graph.numRows, graph.numCols);
 	let previous: GraphTypes.Previous = {};
 	let distances: GraphTypes.Distances = {};
-	let visited: number[] = [];
 	let pathfindingAnimation: GraphTypes.PathfindingAnimation[] = [];
 	let path: number[] = [];
 	let endIndices = Position.absoluteToIndex(
@@ -27,19 +26,25 @@ export const aStar = (
 		x: endIndices.row,
 		y: endIndices.col,
 	};
+	let foundEnd = false;
 
 	nodes.enqueue(start, 0);
 	previous[start] = NaN;
 	distances[start] = 0;
-	visited.push(start);
+
+	pathfindingAnimation.push({
+		index: start,
+		state: PathfindingStates.VISITING,
+	});
 
 	while (nodes.values.length) {
 		let current = nodes.dequeue();
+		console.log(current.node);
 
-		pathfindingAnimation.push({
-			index: current.node,
-			state: PathfindingStates.VISITING,
-		});
+		// pathfindingAnimation.push({
+		// 	index: current.node,
+		// 	state: PathfindingStates.VISITING,
+		// });
 
 		if (current.node === end) {
 			buildPath(
@@ -55,19 +60,46 @@ export const aStar = (
 			break;
 		}
 
-		for (let neighbor of graph.adjacencyList[current.node]) {
-			let newCost = distances[current.node] + neighbor.weight;
-			let priority = newCost + graph.getHeuristic(endVertex, neighbor);
+		for (const neighbor of graph.adjacencyList[current.node]) {
+			const newCost =
+				distances[current.node] +
+				graph.getEdgeWeight(current.node, neighbor.node);
+
+			const priority = newCost + graph.getHeuristic(neighbor, endVertex);
+
+			if (!(neighbor.node in distances) && !foundEnd) {
+				pathfindingAnimation.push({
+					index: neighbor.node,
+					state: PathfindingStates.VISITING,
+				});
+				if (neighbor.node === end) {
+					foundEnd = true;
+				}
+			}
 
 			if (
 				!(neighbor.node in distances) ||
 				newCost < distances[neighbor.node]
 			) {
+				if (neighbor.node in distances) {
+					nodes.updatePriority(neighbor.node, priority);
+				} else {
+					nodes.enqueue(neighbor.node, priority);
+				}
+				console.log('enqueueing:', neighbor.node);
 				distances[neighbor.node] = newCost;
-				nodes.enqueue(neighbor.node, priority);
 				previous[neighbor.node] = current.node;
 			}
 		}
+
+		console.log(...nodes.values);
+	}
+
+	if (path.length === 0) {
+		pathfindingAnimation.push({
+			index: 0,
+			state: PathfindingStates.NO_PATH,
+		});
 	}
 
 	return pathfindingAnimation;

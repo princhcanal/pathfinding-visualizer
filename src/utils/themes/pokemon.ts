@@ -23,11 +23,11 @@ export const pokemonTheme: GraphTheme = {
 		vertex.style.backgroundImage = 'url(/img/rayquaza.png)';
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
-		vertex.style.backgroundSize = 'cover';
-		vertex.style.cursor = 'url(/img/rayquaza.png), pointer';
+		vertex.style.backgroundSize = '80%';
+		vertex.style.cursor = 'url(/img/rayquazaCursor.png), pointer';
 	},
 	cursorWall: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/rayquaza.png), pointer';
+		vertex.style.cursor = 'url(/img/rayquazaCursor.png), pointer';
 	},
 	obstacle1: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -35,10 +35,10 @@ export const pokemonTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/groudon.png), pointer';
+		vertex.style.cursor = 'url(/img/groudonCursor.png), pointer';
 	},
 	cursorObstacle1: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/groudon.png), pointer';
+		vertex.style.cursor = 'url(/img/groudonCursor.png), pointer';
 	},
 	obstacle2: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -46,10 +46,10 @@ export const pokemonTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/kyogre.png), pointer';
+		vertex.style.cursor = 'url(/img/kyogreCursor.png), pointer';
 	},
 	cursorObstacle2: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/kyogre.png), pointer';
+		vertex.style.cursor = 'url(/img/kyogreCursor.png), pointer';
 	},
 	obstacle3: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
@@ -57,16 +57,16 @@ export const pokemonTheme: GraphTheme = {
 		vertex.style.backgroundRepeat = 'no-repeat';
 		vertex.style.backgroundPosition = 'center';
 		vertex.style.backgroundSize = '100%';
-		vertex.style.cursor = 'url(/img/latias.png), pointer';
+		vertex.style.cursor = 'url(/img/latiasCursor.png), pointer';
 	},
 	cursorObstacle3: (vertex: HTMLDivElement) => {
-		vertex.style.cursor = 'url(/img/latias.png), pointer';
+		vertex.style.cursor = 'url(/img/latiasCursor.png), pointer';
 	},
 	unvisited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = '';
 		vertex.style.backgroundImage = '';
 		vertex.style.color = Colors.COLOR_POKEMON_BLUE;
-		vertex.style.cursor = 'url(/img/rayquaza.png), pointer';
+		vertex.style.cursor = 'url(/img/rayquazaCursor.png), pointer';
 	},
 	visited: (vertex: HTMLDivElement) => {
 		vertex.style.backgroundColor = Colors.COLOR_POKEMON_BLUE;
@@ -105,6 +105,7 @@ export const pokemonTheme: GraphTheme = {
 	},
 	bodyBackground: (body: HTMLBodyElement) => {
 		body.style.background = `linear-gradient(to top, ${Colors.COLOR_POKEMON_EMERALD}, ${Colors.COLOR_POKEMON_BLUE})`;
+		// body.style.background = `linear-gradient(to top, ${Colors.COLOR_POKEMON_BLUE}, ${Colors.COLOR_POKEMON_EMERALD})`;
 	},
 	header: (div: HTMLDivElement) => {
 		div.style.backgroundColor = 'transparent';
@@ -165,7 +166,7 @@ export const pokemonTheme: GraphTheme = {
 };
 
 export const pokemonObstacleOptions: Obstacle = {
-	wall: 'Rayquaza (Weight: Infinity)',
+	wall: 'Rayquaza (Barrier)',
 	obstacle1: 'Groudon (Weight: 2)',
 	obstacle2: 'Kyogre (Weight: 3)',
 	obstacle3: 'Latias (Weight: 4)',

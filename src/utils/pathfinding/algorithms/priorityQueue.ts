@@ -1,7 +1,7 @@
 import * as GraphTypes from './graphTypes';
 import * as Position from '../../position';
 
-export class PriorityQueue {
+export class PriorityQueueFast {
 	values: GraphTypes.Vertex[];
 
 	constructor(public numRows: number, public numCols: number) {
@@ -28,6 +28,15 @@ export class PriorityQueue {
 			this.swap(this.values, index, parentIndex);
 			index = parentIndex;
 			parentIndex = Math.floor((index - 1) / 2);
+		}
+	}
+
+	updatePriority(val: number, priority: number) {
+		for (const value of this.values) {
+			if (value.node === val) {
+				this.values.splice(this.values.indexOf(value), 1);
+				this.enqueue(val, priority);
+			}
 		}
 	}
 
@@ -64,6 +73,47 @@ export class PriorityQueue {
 		}
 
 		return max;
+	}
+
+	swap(arr: GraphTypes.Vertex[], ind1: number, ind2: number) {
+		[arr[ind1], arr[ind2]] = [arr[ind2], arr[ind1]];
+	}
+}
+
+export class PriorityQueue {
+	values: GraphTypes.Vertex[];
+
+	constructor(public numRows: number, public numCols: number) {
+		this.values = [];
+	}
+
+	enqueue(val: number, priority: number) {
+		let indices = Position.absoluteToIndex(val, this.numRows, this.numCols);
+		let newNode: GraphTypes.Vertex = {
+			node: val,
+			weight: priority,
+			x: indices.row,
+			y: indices.col,
+		};
+		this.values.push(newNode);
+		this.sort();
+	}
+
+	dequeue() {
+		return this.values.shift() as GraphTypes.Vertex;
+	}
+
+	updatePriority(val: number, priority: number) {
+		for (const value of this.values) {
+			if (value.node === val) {
+				this.values.splice(this.values.indexOf(value), 1);
+				this.enqueue(val, priority);
+			}
+		}
+	}
+
+	sort() {
+		this.values.sort((a, b) => a.weight - b.weight);
 	}
 
 	swap(arr: GraphTypes.Vertex[], ind1: number, ind2: number) {

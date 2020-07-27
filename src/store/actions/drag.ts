@@ -176,7 +176,6 @@ export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
 		);
 
 		if (drag.isStartMouseDown && drag.isDoneAnimating) {
-			console.log(overObstacleIndex);
 			dispatch(
 				actions.onRecalculatePath(
 					vertexIndex,
