@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/pathfinding-visualizer/static/css/main.7114b010.chunk.css",
+    "main.js": "/pathfinding-visualizer/static/js/main.2850ae17.chunk.js",
+    "main.js.map": "/pathfinding-visualizer/static/js/main.2850ae17.chunk.js.map",
+    "runtime-main.js": "/pathfinding-visualizer/static/js/runtime-main.b6ae0412.js",
+    "runtime-main.js.map": "/pathfinding-visualizer/static/js/runtime-main.b6ae0412.js.map",
+    "static/js/2.0e6967fa.chunk.js": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js",
+    "static/js/2.0e6967fa.chunk.js.map": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js.map",
+    "index.html": "/pathfinding-visualizer/index.html",
+    "precache-manifest.8bed0cd437fc15201c2f0128267891d4.js": "/pathfinding-visualizer/precache-manifest.8bed0cd437fc15201c2f0128267891d4.js",
+    "service-worker.js": "/pathfinding-visualizer/service-worker.js",
+    "static/css/main.7114b010.chunk.css.map": "/pathfinding-visualizer/static/css/main.7114b010.chunk.css.map",
+    "static/js/2.0e6967fa.chunk.js.LICENSE.txt": "/pathfinding-visualizer/static/js/2.0e6967fa.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/pathfinding-visualizer/static/media/lakers.67ccf769.ttf"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b6ae0412.js",
+    "static/js/2.0e6967fa.chunk.js",
+    "static/css/main.7114b010.chunk.css",
+    "static/js/main.2850ae17.chunk.js"
+  ]
+}
