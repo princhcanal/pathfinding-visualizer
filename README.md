@@ -1,6 +1,6 @@
 # Pathfinding Visualizer
 
-Sharing my version of the pathfinding visualization project. Like my sorting visualization project, this project was also inspired by [Clement Mihailescu](https://github.com/clementmihailescu) (make sure you checkout his company AlgoExpert on algoexpert.io) to practice for coding interviews).
+This is my version of the pathfinding visualization project. Like my sorting visualization project, this project was also inspired by [Clement Mihailescu](https://github.com/clementmihailescu) (make sure you checkout his company AlgoExpert on [algoexpert.io](https://algoexpert.io)) to practice for coding interviews).
 
 The pathfinding algorithms implemented were Dijkstra's algorithm, A\*, Greedy Best-First Search, Breadth-First Search, and Depth-First Search.
 
