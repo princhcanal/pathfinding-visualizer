@@ -63,7 +63,7 @@ export class PriorityQueueFast {
 			}
 			if (
 				swapIndex &&
-				this.values[parentIndex].weight > this.values[swapIndex].weight
+				this.values[parentIndex].weight >= this.values[swapIndex].weight
 			) {
 				this.swap(this.values, parentIndex, swapIndex);
 				parentIndex = swapIndex;

@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { RefObject, Dispatch } from 'react';
 import { ActionTypes } from './types';
 import * as actions from '../actions';
 import { GraphTheme } from '../../utils/themes';
@@ -83,7 +83,7 @@ export const onSetWallIndices = (
 	wallIndices: number[],
 	verticesRef: RefObject<HTMLDivElement>
 ) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch(setWallIndices(wallIndices, verticesRef));
 		dispatch(initGraph(verticesRef, true));
 		dispatch(
@@ -114,7 +114,7 @@ export const onSetObstacle1Indices = (
 	obstacle1Indices: number[],
 	verticesRef: RefObject<HTMLDivElement>
 ) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch(setObstacle1Indices(obstacle1Indices, verticesRef));
 		dispatch(initGraph(verticesRef, true));
 		dispatch(
@@ -145,7 +145,7 @@ export const onSetObstacle2Indices = (
 	obstacle2Indices: number[],
 	verticesRef: RefObject<HTMLDivElement>
 ) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch(setObstacle2Indices(obstacle2Indices, verticesRef));
 		dispatch(initGraph(verticesRef, true));
 		dispatch(
@@ -176,7 +176,7 @@ export const onSetObstacle3Indices = (
 	obstacle3Indices: number[],
 	verticesRef: RefObject<HTMLDivElement>
 ) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch(setObstacle3Indices(obstacle3Indices, verticesRef));
 		dispatch(initGraph(verticesRef, true));
 		dispatch(
@@ -200,7 +200,7 @@ export const clearWalls = (verticesRef: RefObject<HTMLDivElement>) => {
 };
 
 export const onClearWalls = (verticesRef: RefObject<HTMLDivElement>) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch(actions.clearDragWalls());
 		dispatch(clearWalls(verticesRef));
 		dispatch(initGraph(verticesRef, true));
@@ -235,7 +235,7 @@ export const onRecalculatePath = (
 	overStartIndex: number,
 	overObstacleIndex: number
 ) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		let drag = getState().drag;
 		let isDoneAnimating = drag.isDoneAnimating;
 		let isStartMouseDown = drag.isStartMouseDown;

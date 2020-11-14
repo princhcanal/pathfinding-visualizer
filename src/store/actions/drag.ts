@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { RefObject, Dispatch } from 'react';
 import { ActionTypes } from './types';
 import * as actions from '../actions';
 import * as Position from '../../utils/position';
@@ -24,7 +24,7 @@ export const mouseDown = (
 };
 
 export const onMouseDown = (e: any) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		let graph = getState().graph;
 		let isAnimating = graph.isAnimating;
 		let startVertex = graph.startVertex;
@@ -69,7 +69,7 @@ export const mouseOver = (
 };
 
 export const onMouseOver = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		let graph = getState().graph;
 		let drag = getState().drag;
 		let vertex = e.target;
@@ -235,7 +235,7 @@ export const mouseOut = (
 };
 
 export const onMouseOut = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		let graph = getState().graph;
 		let drag = getState().drag;
 		let startVertex = graph.startVertex;
@@ -358,7 +358,7 @@ export const mouseUp = (e: any) => {
 };
 
 export const onMouseUp = (e: any, verticesRef: RefObject<HTMLDivElement>) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		let vertex = e.target;
 		let vertexRow = parseInt(vertex.getAttribute('row'));
 		let vertexCol = parseInt(vertex.getAttribute('column'));
@@ -462,7 +462,7 @@ export const setObstacleRef = (obstacleRef: number[]) => {
 };
 
 export const onSetObstacleRef = (obstacleRef: string) => {
-	return (dispatch: any, getState: any) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
 		const drag = getState().drag;
 		const wallIndices = drag.wallIndices;
 		const obstacle1Indices = drag.obstacle1Indices;

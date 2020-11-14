@@ -3,7 +3,6 @@ import { PriorityQueue } from './priorityQueue';
 import * as GraphTypes from './graphTypes';
 import { PathfindingStates } from '../pathfindingStates';
 import { buildPath } from './buildPath';
-
 export const dijkstra = (
 	graph: Graph,
 	start: number,
@@ -25,7 +24,7 @@ export const dijkstra = (
 	previous[start] = NaN;
 	nodes.updatePriority(start, 0);
 
-	while (nodes.values.length) {
+    while (nodes.values.length) {
 		const current = nodes.dequeue();
 
 		pathfindingAnimation.push({

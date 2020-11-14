@@ -39,7 +39,6 @@ export const aStar = (
 
 	while (nodes.values.length) {
 		let current = nodes.dequeue();
-		console.log(current.node);
 
 		// pathfindingAnimation.push({
 		// 	index: current.node,
@@ -86,13 +85,10 @@ export const aStar = (
 				} else {
 					nodes.enqueue(neighbor.node, priority);
 				}
-				console.log('enqueueing:', neighbor.node);
 				distances[neighbor.node] = newCost;
 				previous[neighbor.node] = current.node;
 			}
 		}
-
-		console.log(...nodes.values);
 	}
 
 	if (path.length === 0) {
